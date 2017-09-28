@@ -79,8 +79,8 @@ function createScene() {
 	//scene.add(new THREE.AxisHelper(10));
 
 	createTable(0, 0, 0);
-	//createBall(0, 0, 15);
 
+	//createBall(0, 0, 15);	
 }
 
 function onResize(){
