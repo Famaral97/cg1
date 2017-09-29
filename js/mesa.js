@@ -31,7 +31,9 @@ function createTable(x, y, z) {
 
 function createCamera(){
 	'use strict';
-	camera = new THREE.OrthographicCamera(-400, 400, 400, -400, 1, 1000);
+	var size = 600;
+	var aspect = window.innerWidth / window.innerHeight;
+	camera = new THREE.OrthographicCamera(size*aspect/-2, size*aspect/2, size/2, size/-2, 1, 2000);
 	camera.position.x = 0;
 	camera.position.y = 400;
 	camera.position.z = 0;
