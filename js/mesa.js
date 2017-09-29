@@ -52,12 +52,19 @@ function createScene() {
 function onResize(){
 	'use strict';
 
-	renderer.setSize(window.innerWidth, window.innerHeight);
-
 	if(window.innerHeight > 0 && window.innerWidth > 0) {
 		camera.aspect = renderer.getSize().width / renderer.getSize().height;
 		camera.updateProjectionMatrix();
 	}
+
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	camera.left = window.innerWidth/-2;
+	camera.right = window.innerWidth/2;
+	camera.top = window.innerHeight/2;
+	camera.bottom = window.innerHeight/-2;
+
+	camera.updateProjectionMatrix();
+
 
 	render();
 }
@@ -99,6 +106,6 @@ function init(){
 
 	render();
 
-	//window.addEventListener("resize", onResize);
+	window.addEventListener("resize", onResize);
 	window.addEventListener("keydown", onKeyDown);
 }
