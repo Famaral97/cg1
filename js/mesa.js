@@ -1,36 +1,8 @@
 /*global THREE*/
-
 var camera, scene, renderer;
 
 var geometry, material, mesh;
 
-var ball;
-
-function createBall(x, y, z){
-	'use strict';
-
-	ball = new THREE.Object3D();
-	ball.userData = {jumping: true, step: 0};
-
-	material = new THREE.MeshBasicMaterial({color: 0xff0000, wireframe: true});
-	geometry = new THREE.SphereGeometry(4, 10, 10);
-	mesh = new THREE.Mesh(geometry, material);
-
-	ball.add(mesh);
-	ball.position.set(x, y, z);
-
-	scene.add(ball);
-}
-
-function addTableLeg(obj, x, y, z){
-	'use strict';
-
-	geometry = new THREE.CubeGeometry(2, 6, 2);
-	mesh = new THREE.Mesh(geometry, material);
-	mesh.position.set(x, y - 3, z);
-
-	obj.add(mesh);
-}
 
 function addTableTop(obj, x, y, z){
 	'use strict';
@@ -49,11 +21,6 @@ function createTable(x, y, z) {
 	material = new THREE.MeshBasicMaterial({color: 0xD8A711, wireframe: true});
 
 	addTableTop(table, 0, 0, 0);
-	//addTableLeg(table, -25, -1, -8);
-	//addTableLeg(table, -25, -1, 8);
-	//addTableLeg(table, 25, -1, 8);
-	//addTableLeg(table, 25, -1, -8);
-
 
 	scene.add(table);
 
@@ -76,11 +43,8 @@ function createScene() {
 
 	scene = new THREE.Scene();
 
-	//scene.add(new THREE.AxisHelper(10));
-
 	createTable(0, 0, 0);
 
-	//createBall(0, 0, 15);	
 }
 
 function onResize(){
