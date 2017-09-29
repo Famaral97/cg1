@@ -99,6 +99,6 @@ function init(){
 
 	render();
 
-	window.addEventListener("resize", onResize);
+	//window.addEventListener("resize", onResize);
 	window.addEventListener("keydown", onKeyDown);
 }
