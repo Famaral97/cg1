@@ -1,10 +1,11 @@
 /*global THREE*/
-var camera, scene, renderer;
+var clock, camera, scene, renderer;
 
 var geometry, material, mesh;
 
 var i, controls;
 
+var car;
 
 function addTableTop(obj, x, y, z){
 	'use strict';
@@ -46,6 +47,51 @@ function createCheerios(x,y,z){
 
 	torus.rotation.x = Math.PI / 2;
 
+}
+
+function createCar(x, y, z) {
+  'use strict';
+
+  var wheel;
+
+  function addCarBody(obj, x, y, z) {
+    'use strict';
+    geometry = new THREE.CubeGeometry(30, 20, 20);
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(x, y, z);
+
+    obj.add(mesh);
+  }
+
+  function addCarWheel(obj, x, y, z) {
+    'use strict';
+
+    geometry = new THREE.TorusGeometry(5, 0.5, 10, 20, 10);
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(x, y, z);
+
+    obj.add(mesh);
+  }
+
+  car = new THREE.Object3D();
+
+  var dof = new THREE.Vector3(1, 0, 0);
+
+  car.userData = {velocity: 0, acceleration: 0, move: false, dof: dof};
+
+  material = new THREE.MeshBasicMaterial({ color: 0x2975c6, wireframe: true });
+
+  addCarBody(car, 0, 0, 0);
+  addCarWheel(car, 15, 0, -15);
+  addCarWheel(car, 15, 0, 15);
+  addCarWheel(car, -15, 0, 15);
+  addCarWheel(car, -15, 0, -15);
+
+  scene.add(car);
+
+  car.position.x = x;
+  car.position.y = y;
+  car.position.z = z;
 }
 
 function createOrange(x, y, z) {
@@ -92,6 +138,7 @@ function createScene() {
 	scene = new THREE.Scene();
 
 	createTable(0, 0, 0);
+	createCar(0, 250, 0);
 	for (i=0; i < 44; i++) {
 		createCheerios(240*Math.cos(i) + 0, 250, 240*Math.sin(i) + 0);
 	}
@@ -139,6 +186,10 @@ function onKeyDown(e){
 				}
 			});
 			break;
+		case 38: // arrow up
+			car.userData.move = true;
+            car.userData.acceleration = 2;
+            break;
 	}
 
 	render();
@@ -151,14 +202,25 @@ function render(){
 };
 
 function animate() {
-	requestAnimationFrame( animate );
-	controls.update();
-	stats.update();
-	render();
+	var delta_time = clock.getDelta();
+
+    var next_velocity = car.userData.velocity + car.userData.acceleration * delta_time;
+    var next_position_x = car.position.x + car.userData.dof.x * next_velocity * delta_time;
+    var next_position_z = car.position.z + car.userData.dof.z * next_velocity * delta_time;
+
+    car.userData.velocity = next_velocity;
+    car.position.x = next_position_x;
+    car.position.z = next_position_z;
+
+    render();
+
+    requestAnimationFrame(animate);
 }
 
 function init(){
 	'use strict';
+
+	clock = new THREE.Clock;
 
 	renderer = new THREE.WebGLRenderer({antialias: true});
 
@@ -174,6 +236,6 @@ function init(){
 	window.addEventListener("resize", onResize);
 	window.addEventListener("keydown", onKeyDown);
 
-	controls = new THREE.OrbitControls( camera, renderer.domElement );
-	controls.addEventListener( 'change', render );
+	// controls = new THREE.OrbitControls( camera, renderer.domElement );
+	// controls.addEventListener( 'change', render );
 }
