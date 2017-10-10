@@ -3,6 +3,8 @@ var camera, scene, renderer;
 
 var geometry, material, mesh;
 
+var i, controls;
+
 
 function addTableTop(obj, x, y, z){
 	'use strict';
@@ -18,7 +20,7 @@ function createTable(x, y, z) {
 
 	var table = new THREE.Object3D();
 
-	material = new THREE.MeshBasicMaterial({color: 0xD8A711, wireframe: true});
+	material = new THREE.MeshBasicMaterial({color: 0x663399, wireframe: true});
 
 	addTableTop(table, 0, 0, 0);
 
@@ -27,6 +29,50 @@ function createTable(x, y, z) {
 	table.position.x = x;
 	table.position.y = y;
 	table.position.z = z;
+}
+
+function createCheerios(x,y,z){
+	'use strict';
+
+	var geometry = new THREE.TorusGeometry(5,1,12,20);
+	var material = new THREE.MeshBasicMaterial( { color: 0xFF420E, wireframe: true} );
+	var torus = new THREE.Mesh( geometry, material );
+
+	scene.add(torus);
+
+	torus.position.x = x;
+	torus.position.y = y;
+	torus.position.z = z;
+
+	torus.rotation.x = Math.PI / 2;
+
+}
+
+function createOrange(x, y, z) {
+	'use strict';
+
+  	var geometry = new THREE.SphereGeometry( 15, 32, 32);
+  	var material = new THREE.MeshBasicMaterial( {color: 0xffa500, wireframe: true} );
+  	var orange = new THREE.Mesh( geometry, material );
+  	scene.add( orange );
+
+  	orange.position.x = x;
+  	orange.position.y = y;
+  	orange.position.z = z;
+
+}
+
+function createButter(x, y, z) {
+  var geometry = new THREE.BoxGeometry(40, 20, 20);
+  var material = new THREE.MeshBasicMaterial( {color: 0xf3ef7d, wireframe: true} );
+  var butter = new THREE.Mesh( geometry, material );
+  scene.add( butter );
+
+  butter.position.x = x;
+  butter.position.y = y;
+  butter.position.z = z;
+
+  butter.rotation.y = Math.random()*(Math.PI * 2);
 }
 
 function createCamera(){
@@ -46,7 +92,19 @@ function createScene() {
 	scene = new THREE.Scene();
 
 	createTable(0, 0, 0);
+	for (i=0; i < 44; i++) {
+		createCheerios(240*Math.cos(i) + 0, 250, 240*Math.sin(i) + 0);
+	}
 
+	for (i=0; i < 44; i++) {
+		createCheerios(120*Math.cos(i) + 0, 250, 120*Math.sin(i) + 0);
+	}
+    for (i=0; i < 3; i++) {
+		createOrange((Math.random()*2 - 1)*235, 270, (Math.random()*2 - 1)*235);
+    }
+	for (i=0; i < 5; i++) {
+		createButter((Math.random()*2 - 1)*210, 270, (Math.random()*2 - 1)*210);
+	}
 }
 
 function onResize(){
@@ -92,6 +150,13 @@ function render(){
 	renderer.render(scene, camera);
 };
 
+function animate() {
+	requestAnimationFrame( animate );
+	controls.update();
+	stats.update();
+	render();
+}
+
 function init(){
 	'use strict';
 
@@ -108,4 +173,7 @@ function init(){
 
 	window.addEventListener("resize", onResize);
 	window.addEventListener("keydown", onKeyDown);
+
+	controls = new THREE.OrbitControls( camera, renderer.domElement );
+	controls.addEventListener( 'change', render );
 }
