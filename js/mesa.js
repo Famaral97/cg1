@@ -9,8 +9,8 @@ var car;
 
 var rotationAxis = new THREE.Vector3(0, 1, 0);
 
-const ACCELERATION = 600;
-const MAX_VELOCITY = 0.1;
+const ACCELERATION = 400;
+const MAX_VELOCITY = 400;
 
 function addTableTop(obj, x, y, z){
 	'use strict';
@@ -210,11 +210,11 @@ function onKeyDown(e){
 		// now for the car movement
 		case 38: // arrow up
 			car.userData.move = true;
-      car.userData.acceleration = ACCELERATION;
+      		car.userData.acceleration = ACCELERATION;
 			break;
 		case 40: // arrow down
 			car.userData.move = true;
-      car.userData.acceleration = -ACCELERATION;
+      		car.userData.acceleration = -ACCELERATION;
 			break;
 
 		// now for the car rotation
@@ -241,14 +241,13 @@ function render(){
 function animate() {
 	var delta_time = clock.getDelta();
 
-
     var next_velocity = car.userData.velocity + car.userData.acceleration * delta_time;
     var next_position_x = car.position.x + car.userData.dof.x * next_velocity * delta_time;
     var next_position_z = car.position.z + car.userData.dof.z * next_velocity * delta_time;
 
 		if (car.userData.move) {
 
-			if (car.userData > MAX_VELOCITY) {
+			if (next_velocity > MAX_VELOCITY) {
 				car.userData.velocity = MAX_VELOCITY;
 			}
 
