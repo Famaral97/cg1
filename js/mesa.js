@@ -7,6 +7,11 @@ var i, controls;
 
 var car;
 
+var rotationAxis = new THREE.Vector3(0, 1, 0);
+
+const ACCELERATION = 600;
+const MAX_VELOCITY = 0.1;
+
 function addTableTop(obj, x, y, z){
 	'use strict';
 	geometry = new THREE.BoxGeometry(500, 500, 500);
@@ -174,6 +179,21 @@ function onResize(){
 	render();
 }
 
+function onKeyUp(e){
+	'use strict';
+
+	switch (e.keyCode) {
+		case 38: // arrow up
+			car.userData.move = false;
+			car.userData.acceleration = -ACCELERATION;
+			break;
+		case 40: // arrow down
+			car.userData.move = false;
+      car.userData.acceleration = ACCELERATION;
+      break;
+	}
+}
+
 function onKeyDown(e){
 	'use strict';
 
@@ -186,10 +206,27 @@ function onKeyDown(e){
 				}
 			});
 			break;
+
+		// now for the car movement
 		case 38: // arrow up
 			car.userData.move = true;
-            car.userData.acceleration = 2;
-            break;
+      car.userData.acceleration = ACCELERATION;
+			break;
+		case 40: // arrow down
+			car.userData.move = true;
+      car.userData.acceleration = -ACCELERATION;
+			break;
+
+		// now for the car rotation
+		case 37: // left arrow
+			car.rotateOnAxis(rotationAxis, 0.1);
+			car.userData.dof.applyAxisAngle(rotationAxis, 0.1);
+			break;
+		case 39: // right arrow
+			car.rotateOnAxis(rotationAxis, -0.1);
+			car.userData.dof.applyAxisAngle(rotationAxis, -0.1);
+			break;
+
 	}
 
 	render();
@@ -204,15 +241,36 @@ function render(){
 function animate() {
 	var delta_time = clock.getDelta();
 
+
     var next_velocity = car.userData.velocity + car.userData.acceleration * delta_time;
     var next_position_x = car.position.x + car.userData.dof.x * next_velocity * delta_time;
     var next_position_z = car.position.z + car.userData.dof.z * next_velocity * delta_time;
 
-    car.userData.velocity = next_velocity;
-    car.position.x = next_position_x;
-    car.position.z = next_position_z;
+		if (car.userData.move) {
 
-    render();
+			if (car.userData > MAX_VELOCITY) {
+				car.userData.velocity = MAX_VELOCITY;
+			}
+
+			else {
+				car.userData.velocity = next_velocity;
+			}
+			car.position.x = next_position_x;
+			car.position.z = next_position_z;
+		}
+
+		else if (!car.userData.move) {
+			if ((car.userData.acceleration < 0 && next_velocity < 0) || (car.userData.acceleration > 0 && next_velocity > 0)){
+				car.userData.velocity = 0;
+			}
+			else {
+				car.userData.velocity = next_velocity;
+				car.position.x = next_position_x;
+				car.position.z = next_position_z;
+			}
+		}
+
+		render();
 
     requestAnimationFrame(animate);
 }
@@ -235,6 +293,7 @@ function init(){
 
 	window.addEventListener("resize", onResize);
 	window.addEventListener("keydown", onKeyDown);
+	window.addEventListener("keyup", onKeyUp);
 
 	// controls = new THREE.OrbitControls( camera, renderer.domElement );
 	// controls.addEventListener( 'change', render );
