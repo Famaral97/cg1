@@ -10,7 +10,7 @@ var car;
 var rotationAxis = new THREE.Vector3(0, 1, 0);
 
 const ACCELERATION = 400;
-const MAX_VELOCITY = 400;
+const MAX_VELOCITY = 200;
 
 function addTableTop(obj, x, y, z){
 	'use strict';
@@ -26,7 +26,7 @@ function createTable(x, y, z) {
 
 	var table = new THREE.Object3D();
 
-	material = new THREE.MeshBasicMaterial({color: 0x663399, wireframe: true});
+	material = new THREE.MeshBasicMaterial({color: 0xddddddd, wireframe: true});
 
 	addTableTop(table, 0, 0, 0);
 
@@ -71,7 +71,7 @@ function createCar(x, y, z) {
   function addCarWheel(obj, x, y, z) {
     'use strict';
 
-    geometry = new THREE.TorusGeometry(5, 0.5, 10, 20, 10);
+    geometry = new THREE.TorusGeometry(4, 3, 10, 50, 10);
     mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y, z);
 
@@ -86,13 +86,15 @@ function createCar(x, y, z) {
 
   material = new THREE.MeshBasicMaterial({ color: 0x2975c6, wireframe: true });
 
-  addCarBody(car, 0, 0, 0);
-  addCarWheel(car, 15, 0, -15);
-  addCarWheel(car, 15, 0, 15);
-  addCarWheel(car, -15, 0, 15);
-  addCarWheel(car, -15, 0, -15);
+  addCarBody(car, 0, 8, 0);
+  addCarWheel(car, 14, 0, -13);
+  addCarWheel(car, 14, 0, 13);
+  addCarWheel(car, -14, 0, 13);
+  addCarWheel(car, -14, 0, -13);
 
   scene.add(car);
+
+
 
   car.position.x = x;
   car.position.y = y;
@@ -143,19 +145,19 @@ function createScene() {
 	scene = new THREE.Scene();
 
 	createTable(0, 0, 0);
-	createCar(0, 250, 0);
+	createCar(0, 256, 0);
 	for (i=0; i < 44; i++) {
-		createCheerios(240*Math.cos(i) + 0, 250, 240*Math.sin(i) + 0);
+		createCheerios(240*Math.cos(i) , 250, 240*Math.sin(i) );
 	}
 
 	for (i=0; i < 44; i++) {
-		createCheerios(120*Math.cos(i) + 0, 250, 120*Math.sin(i) + 0);
+		createCheerios(120*Math.cos(i) , 250, 120*Math.sin(i) );
 	}
-    for (i=0; i < 3; i++) {
-		createOrange((Math.random()*2 - 1)*235, 270, (Math.random()*2 - 1)*235);
+    for (i=0; i < 5; i++) {
+		createOrange((Math.random()*2 - 1)*235, 265, (Math.random()*2 - 1)*235);
     }
 	for (i=0; i < 5; i++) {
-		createButter((Math.random()*2 - 1)*210, 270, (Math.random()*2 - 1)*210);
+		createButter((Math.random()*2 - 1)*210, 260, (Math.random()*2 - 1)*210);
 	}
 }
 
@@ -250,7 +252,9 @@ function animate() {
 			if (next_velocity > MAX_VELOCITY) {
 				car.userData.velocity = MAX_VELOCITY;
 			}
-
+			else if (next_velocity < -MAX_VELOCITY) {
+				car.userData.velocity = -MAX_VELOCITY;
+			}
 			else {
 				car.userData.velocity = next_velocity;
 			}
@@ -294,6 +298,6 @@ function init(){
 	window.addEventListener("keydown", onKeyDown);
 	window.addEventListener("keyup", onKeyUp);
 
-	// controls = new THREE.OrbitControls( camera, renderer.domElement );
-	// controls.addEventListener( 'change', render );
+	 //controls = new THREE.OrbitControls( camera, renderer.domElement );
+	 //controls.addEventListener( 'change', render );
 }
