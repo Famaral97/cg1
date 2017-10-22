@@ -82,7 +82,7 @@ function createCar(x, y, z) {
 
   var dof = new THREE.Vector3(1, 0, 0);
 
-  car.userData = {velocity: 0, acceleration: 0, move: false, dof: dof,, left:false,right:false,up:false,down:false};
+  car.userData = {velocity: 0, acceleration: 0, move: false, dof: dof, left:false,right:false,up:false,down:false};
 
   material = new THREE.MeshBasicMaterial({ color: 0x2975c6, wireframe: true });
 
