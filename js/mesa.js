@@ -82,7 +82,7 @@ function createCar(x, y, z) {
 
   var dof = new THREE.Vector3(1, 0, 0);
 
-  car.userData = {velocity: 0, acceleration: 0, move: false, dof: dof};
+  car.userData = {velocity: 0, acceleration: 0, move: false, dof: dof,, left:false,right:false,up:false,down:false};
 
   material = new THREE.MeshBasicMaterial({ color: 0x2975c6, wireframe: true });
 
@@ -191,8 +191,14 @@ function onKeyUp(e){
 			break;
 		case 40: // arrow down
 			car.userData.move = false;
-      car.userData.acceleration = ACCELERATION;
-      break;
+      		car.userData.acceleration = ACCELERATION;
+      		break;
+      	case 37: // left arrow
+      		car.userData.left=false;
+      		break;
+    	case 39: // right arrow
+      		car.userData.right=false;
+      		break;
 	}
 }
 
@@ -221,13 +227,11 @@ function onKeyDown(e){
 
 		// now for the car rotation
 		case 37: // left arrow
-			car.rotateOnAxis(rotationAxis, 0.1);
-			car.userData.dof.applyAxisAngle(rotationAxis, 0.1);
-			break;
-		case 39: // right arrow
-			car.rotateOnAxis(rotationAxis, -0.1);
-			car.userData.dof.applyAxisAngle(rotationAxis, -0.1);
-			break;
+	      	car.userData.left=true;
+	     	 break;
+	    case 39: // right arrow
+	      car.userData.right=true;
+	      	break;
 
 	}
 
@@ -272,6 +276,15 @@ function animate() {
 				car.position.z = next_position_z;
 			}
 		}
+		if(car.userData.left){
+	      	car.rotateOnAxis(rotationAxis, 0.05);
+	      	car.userData.dof.applyAxisAngle(rotationAxis, 0.05);
+	    }
+
+	    if(car.userData.right){
+	      	car.rotateOnAxis(rotationAxis, -0.05);
+	      	car.userData.dof.applyAxisAngle(rotationAxis, -0.05);
+	    }
 
 		render();
 
