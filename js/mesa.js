@@ -82,7 +82,7 @@ function createCar(x, y, z) {
 
   var dof = new THREE.Vector3(1, 0, 0);
 
-  car.userData = {velocity: 0, acceleration: 0, move: false, dof: dof, left:false,right:false,up:false,down:false};
+  car.userData = {velocity: 0, acceleration: 0, move: false, dof: dof, left: false, right: false};
 
   material = new THREE.MeshBasicMaterial({ color: 0x2975c6, wireframe: true });
 
@@ -191,14 +191,14 @@ function onKeyUp(e){
 			break;
 		case 40: // arrow down
 			car.userData.move = false;
-      		car.userData.acceleration = ACCELERATION;
-      		break;
-      	case 37: // left arrow
-      		car.userData.left=false;
-      		break;
-    	case 39: // right arrow
-      		car.userData.right=false;
-      		break;
+      car.userData.acceleration = ACCELERATION;
+      break;
+    case 37: // left arrow
+    	car.userData.left = false;
+    	break;
+  	case 39: // right arrow
+    	car.userData.right = false;
+    	break;
 	}
 }
 
@@ -218,20 +218,20 @@ function onKeyDown(e){
 		// now for the car movement
 		case 38: // arrow up
 			car.userData.move = true;
-      		car.userData.acceleration = ACCELERATION;
+      car.userData.acceleration = ACCELERATION;
 			break;
 		case 40: // arrow down
 			car.userData.move = true;
-      		car.userData.acceleration = -ACCELERATION;
+      car.userData.acceleration = -ACCELERATION;
 			break;
 
 		// now for the car rotation
 		case 37: // left arrow
-	      	car.userData.left=true;
-	     	 break;
-	    case 39: // right arrow
-	      car.userData.right=true;
-	      	break;
+	    car.userData.left = true;
+	    break;
+	  case 39: // right arrow
+	    car.userData.right = true;
+	    break;
 
 	}
 
@@ -247,44 +247,45 @@ function render(){
 function animate() {
 	var delta_time = clock.getDelta();
 
-    var next_velocity = car.userData.velocity + car.userData.acceleration * delta_time;
-    var next_position_x = car.position.x + car.userData.dof.x * next_velocity * delta_time;
-    var next_position_z = car.position.z + car.userData.dof.z * next_velocity * delta_time;
+  var next_velocity = car.userData.velocity + car.userData.acceleration * delta_time;
+  var next_position_x = car.position.x + car.userData.dof.x * next_velocity * delta_time;
+  var next_position_z = car.position.z + car.userData.dof.z * next_velocity * delta_time;
 
-		if (car.userData.move) {
+	if (car.userData.move) {
 
-			if (next_velocity > MAX_VELOCITY) {
-				car.userData.velocity = MAX_VELOCITY;
-			}
-			else if (next_velocity < -MAX_VELOCITY) {
-				car.userData.velocity = -MAX_VELOCITY;
-			}
-			else {
-				car.userData.velocity = next_velocity;
-			}
+		if (next_velocity > MAX_VELOCITY) {
+			car.userData.velocity = MAX_VELOCITY;
+		}
+		else if (next_velocity < -MAX_VELOCITY) {
+			car.userData.velocity = -MAX_VELOCITY;
+		}
+		else {
+			car.userData.velocity = next_velocity;
+		}
+		car.position.x = next_position_x;
+		car.position.z = next_position_z;
+	}
+
+	else if (!car.userData.move) {
+		if ((car.userData.acceleration < 0 && next_velocity < 0) || (car.userData.acceleration > 0 && next_velocity > 0)){
+			car.userData.velocity = 0;
+		}
+		else {
+			car.userData.velocity = next_velocity;
 			car.position.x = next_position_x;
 			car.position.z = next_position_z;
 		}
+	}
 
-		else if (!car.userData.move) {
-			if ((car.userData.acceleration < 0 && next_velocity < 0) || (car.userData.acceleration > 0 && next_velocity > 0)){
-				car.userData.velocity = 0;
-			}
-			else {
-				car.userData.velocity = next_velocity;
-				car.position.x = next_position_x;
-				car.position.z = next_position_z;
-			}
-		}
 		if(car.userData.left){
 	      	car.rotateOnAxis(rotationAxis, 0.05);
 	      	car.userData.dof.applyAxisAngle(rotationAxis, 0.05);
-	    }
+	  }
 
-	    if(car.userData.right){
-	      	car.rotateOnAxis(rotationAxis, -0.05);
-	      	car.userData.dof.applyAxisAngle(rotationAxis, -0.05);
-	    }
+    if(car.userData.right){
+      	car.rotateOnAxis(rotationAxis, -0.05);
+      	car.userData.dof.applyAxisAngle(rotationAxis, -0.05);
+    }
 
 		render();
 
