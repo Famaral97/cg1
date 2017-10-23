@@ -128,7 +128,7 @@ function createButter(x, y, z) {
   butter.rotation.y = Math.random()*(Math.PI * 2);
 }
 
-function createCamera(){
+function createCamera_1(){
 	'use strict';
 	var size = 600;
 	var aspect = window.innerWidth / window.innerHeight;
@@ -137,6 +137,24 @@ function createCamera(){
 	camera.position.y = 400;
 	camera.position.z = 0;
 	camera.lookAt(scene.position);
+}
+
+function createCamera_2(){
+	'use strict'
+	camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
+	camera.position.x = 500;
+	camera.position.y = 500;
+	camera.position.z = 500;
+	camera.lookAt(scene.position);
+}
+
+function createCamera_3(){
+	'use strict'
+	camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
+	camera.position.x = car.position.x + 50;
+	camera.position.y = car.position.y + 50;
+	camera.position.z = car.position.z ;
+	camera.lookAt(car.position);
 }
 
 function createScene() {
@@ -153,7 +171,7 @@ function createScene() {
 	for (i=0; i < 44; i++) {
 		createCheerios(120*Math.cos(i) , 250, 120*Math.sin(i) );
 	}
-    for (i=0; i < 5; i++) {
+    for (i=0; i < 3; i++) {
 		createOrange((Math.random()*2 - 1)*235, 265, (Math.random()*2 - 1)*235);
     }
 	for (i=0; i < 5; i++) {
@@ -233,6 +251,15 @@ function onKeyDown(e){
 	    car.userData.right = true;
 	    break;
 
+		case 49:
+			createCamera_1();
+			break;
+		case 50:
+			createCamera_2();
+			break;
+		case 51:
+			createCamera_3();
+			break;
 	}
 
 	render();
@@ -304,7 +331,7 @@ function init(){
 	document.body.appendChild(renderer.domElement);
 
 	createScene();
-	createCamera();
+	createCamera_1();
 
 	render();
 
