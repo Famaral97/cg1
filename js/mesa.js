@@ -9,13 +9,17 @@ var car;
 
 var rotationAxis = new THREE.Vector3(0, 1, 0);
 
-const ACCELERATION = 400;
-const MAX_VELOCITY = 200;
+const ACCELERATION = 500;
+const MAX_VELOCITY_NO_COLLISIONS = 250;
+const VELOCITY_BUTTER = 50;
 const ORANGE_VELOCITY = 50;
 const ORANGE_NUMBER = 10;
 
-var oranges = [];
 
+var MAX_VELOCITY = MAX_VELOCITY_NO_COLLISIONS;
+
+var oranges = [];
+var butterPacks = [];
 
 function addTableTop(obj, x, y, z){
 	'use strict';
@@ -87,7 +91,7 @@ function createCar(x, y, z) {
 
   var dof = new THREE.Vector3(1, 0, 0);
 
-  car.userData = {velocity: 0, acceleration: 0, move: false, dof: dof, left: false, right: false};
+  car.userData = {radius: 10, velocity: 0, acceleration: 0, move: false, dof: dof, left: false, right: false};
 
   material = new THREE.MeshBasicMaterial({ color: 0x2975c6, wireframe: true });
 
@@ -97,9 +101,10 @@ function createCar(x, y, z) {
   addCarWheel(car, -14, 0, 13);
   addCarWheel(car, -14, 0, -13);
 
+	car.scale.set(0.65, 0.65, 0.65);
+
+
   scene.add(car);
-
-
 
   car.position.x = x;
   car.position.y = y;
@@ -141,11 +146,11 @@ function createOrange(x, y, z) {
     }
 
     var orange = new THREE.Object3D();
-    
+
     var dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();
 
 
-    orange.userData = {dof: dof, velocity: ORANGE_VELOCITY};
+    orange.userData = {dof: dof, velocity: ORANGE_VELOCITY, radius: 15};
 
     addOrangeBottom(orange,0,0,0);
     addCaule(orange,0,15,0);
@@ -162,7 +167,7 @@ function createOrange(x, y, z) {
 }
 
 function createButter(x, y, z) {
-  var geometry = new THREE.BoxGeometry(40, 20, 20);
+  var geometry = new THREE.BoxGeometry(30, 20, 20);
   var material = new THREE.MeshBasicMaterial( {color: 0xf3ef7d, wireframe: true} );
   var butter = new THREE.Mesh( geometry, material );
   scene.add( butter );
@@ -172,6 +177,10 @@ function createButter(x, y, z) {
   butter.position.z = z;
 
   butter.rotation.y = Math.random()*(Math.PI * 2);
+
+	butter.userData = { radius: (Math.sqrt(Math.pow(30, 2) + Math.pow(20, 2)) / 2 )};
+
+	butterPacks.push(butter);
 }
 
 function createCamera_1(){
@@ -372,6 +381,14 @@ function animate() {
       }
 
     }
+
+		// collisions
+		// car with butter
+		if (carVsButter(car)) {
+			MAX_VELOCITY = VELOCITY_BUTTER;
+		} else {
+			MAX_VELOCITY = MAX_VELOCITY_NO_COLLISIONS;
+		}
 
 	render();
 
