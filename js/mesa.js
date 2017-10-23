@@ -250,8 +250,6 @@ function onResize(){
 
 	camera.updateProjectionMatrix();
 
-
-	render();
 }
 
 function onKeyUp(e){
@@ -317,7 +315,6 @@ function onKeyDown(e){
 			break;
 	}
 
-	render();
 }
 
 
@@ -370,25 +367,26 @@ function animate() {
     }
 
     for(var orange of oranges){
-      var next_orange_position_x = orange.position.x + orange.userData.dof.x * orange.userData.velocity * delta_time;
-      var next_orange_position_z = orange.position.z + orange.userData.dof.z * orange.userData.velocity * delta_time;
+	    var next_orange_position_x = orange.position.x + orange.userData.dof.x * orange.userData.velocity * delta_time;
+	    var next_orange_position_z = orange.position.z + orange.userData.dof.z * orange.userData.velocity * delta_time;
 
-      orange.position.x=next_orange_position_x;
-      orange.position.z=next_orange_position_z;
-      if(orange.position.x>260 || orange.position.x<-260 || orange.position.z>260 || orange.position.z<-260){
-        orange.position.x=(Math.random()*2 - 1)*235;
-        orange.position.z=(Math.random()*2 - 1)*235;
-      }
+	    orange.position.x=next_orange_position_x;
+	    orange.position.z=next_orange_position_z;
+	    if(orange.position.x>260 || orange.position.x<-260 || orange.position.z>260 || orange.position.z<-260){
+		    orange.position.x=(Math.random()*2 - 1)*235;
+		    orange.position.z=(Math.random()*2 - 1)*235;
+	    }
 
+	   	var vector = new THREE.Vector3(orange.userData.dof.z,0,-orange.userData.dof.x);
+	    orange.rotateOnAxis(vector, 0.05);
     }
-
-		// collisions
-		// car with butter
-		if (carVsButter(car)) {
-			MAX_VELOCITY = VELOCITY_BUTTER;
-		} else {
-			MAX_VELOCITY = MAX_VELOCITY_NO_COLLISIONS;
-		}
+	// collisions
+	// car with butter
+	if (carVsButter(car)) {
+		MAX_VELOCITY = VELOCITY_BUTTER;
+	} else {
+		MAX_VELOCITY = MAX_VELOCITY_NO_COLLISIONS;
+	}
 
 	render();
 
