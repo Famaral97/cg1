@@ -384,14 +384,16 @@ function animate() {
     }
 	// collisions
 	// car with butter
-	if (carVsObject(car, butterPacks)) {
+	if (carVsObject(car, butterPacks).hasCollided) {
 		MAX_VELOCITY = VELOCITY_BUTTER;
 	} else {
 		MAX_VELOCITY = MAX_VELOCITY_NO_COLLISIONS;
 	}
 
-	if (carVsObject(car, oranges)) {
-		console.log("laranja!");
+	// car with oranges
+	var orangeCollision = carVsObject(car, oranges);
+	if (orangeCollision.hasCollided) {
+		orangeCollision.object.userData.dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();;
 	}
 
 	render();

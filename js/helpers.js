@@ -14,10 +14,11 @@ function Collided(object1, object2) {
 
 // collision car vs butterPack
 function carVsObject(car, objectArray) {
-  returnValue = false;
-  for(var object of objectArray) {
-    if (Collided(car, object)) {
-      returnValue = true;
+  returnValue = { hasCollided: false, object: {} }
+  for(var obj of objectArray) {
+    if (Collided(car, obj)) {
+      returnValue.hasCollided = true;
+      returnValue.object = obj;
     }
   }
   return returnValue;
