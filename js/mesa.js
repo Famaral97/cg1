@@ -152,7 +152,7 @@ function createOrange(x, y, z) {
     var dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();
 
 
-    orange.userData = {dof: dof, velocity: ORANGE_VELOCITY, radius: 15, visivel:true};
+    orange.userData = {dof: dof, velocity: ORANGE_VELOCITY, radius: 15};
 
     addOrangeBottom(orange,0,0,0);
     addCaule(orange,0,15,0);
@@ -325,16 +325,6 @@ function render(){
 	renderer.render(scene, camera);
 };
 
-function randomPos(orangeIndex){
-    var orange=oranges[orangeIndex];
-    console.log(orange);
-    orange.position.x=(Math.random()*2 - 1)*235;
-    orange.position.z=(Math.random()*2 - 1)*235;
-    orange.userData.dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();
-    orange.userData.visivel=true;
-    scene.add(orange);
-}
-
 function animate() {
 	var delta_time = clock.getDelta();
 
@@ -384,12 +374,9 @@ function animate() {
 
 	    orange.position.x=next_orange_position_x;
 	    orange.position.z=next_orange_position_z;
-	    if((orange.position.x>260 || orange.position.x<-260 || orange.position.z>260 || orange.position.z<-260)& orange.userData.visivel){
-		    var orange1=oranges.indexOf(orange);
-        	scene.remove(orange);
-        	orange.userData.visivel=false;
-        	var time = Math.random()*10000;
-        	var timer=setTimeout(function(){ randomPos(orange1); }, time );
+	    if(orange.position.x>260 || orange.position.x<-260 || orange.position.z>260 || orange.position.z<-260){
+		    orange.position.x=(Math.random()*2 - 1)*235;
+		    orange.position.z=(Math.random()*2 - 1)*235;
 	    }
 
 	   	var vector = new THREE.Vector3(orange.userData.dof.z,0,-orange.userData.dof.x);
