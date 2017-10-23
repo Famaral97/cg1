@@ -20,6 +20,7 @@ var MAX_VELOCITY = MAX_VELOCITY_NO_COLLISIONS;
 
 var oranges = [];
 var butterPacks = [];
+var cheerios = [];
 
 function addTableTop(obj, x, y, z){
 	'use strict';
@@ -60,6 +61,7 @@ function createCheerios(x,y,z){
 	torus.position.z = z;
 
 	torus.rotation.x = Math.PI / 2;
+	cheerios.push(torus);
 
 }
 
@@ -116,7 +118,7 @@ function createOrange(x, y, z) {
 
     function addOrangeBottom(obj, x, y, z) {
 	    'use strict';
-	    var geometry = new THREE.SphereGeometry( 15, 32, 32);
+	    var geometry = new THREE.SphereGeometry( 15, 12, 12);
 	    var material = new THREE.MeshBasicMaterial( {color: 0xffa500, wireframe: true} );
 	    var mesh = new THREE.Mesh( geometry, material );
 	    mesh.position.set(x, y, z);
@@ -382,10 +384,14 @@ function animate() {
     }
 	// collisions
 	// car with butter
-	if (carVsButter(car)) {
+	if (carVsObject(car, butterPacks)) {
 		MAX_VELOCITY = VELOCITY_BUTTER;
 	} else {
 		MAX_VELOCITY = MAX_VELOCITY_NO_COLLISIONS;
+	}
+
+	if (carVsObject(car, oranges)) {
+		console.log("laranja!");
 	}
 
 	render();

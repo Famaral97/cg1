@@ -13,22 +13,16 @@ function Collided(object1, object2) {
 
 
 // collision car vs butterPack
-function carVsButter(car) {
+function carVsObject(car, objectArray) {
   returnValue = false;
-  for(var butterPack of butterPacks) {
-    if (Collided(car, butterPack)) {
+  for(var object of objectArray) {
+    if (Collided(car, object)) {
       returnValue = true;
     }
   }
   return returnValue;
 }
 
-function carVsOranges(car) {
-  returnValue = false;
-  for(var orange of oranges) {
-    if(Collided(car, orange)) {
-      returnValue = true;
-    }
-  }
-  return returnValue;
+function cheeriosCollition() {
+  //FIXME
 }
