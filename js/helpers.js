@@ -22,3 +22,13 @@ function carVsButter(car) {
   }
   return returnValue;
 }
+
+function carVsOranges(car) {
+  returnValue = false;
+  for(var orange of oranges) {
+    if(Collided(car, orange)) {
+      returnValue = true;
+    }
+  }
+  return returnValue;
+}
