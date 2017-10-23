@@ -12,8 +12,12 @@ var rotationAxis = new THREE.Vector3(0, 1, 0);
 const ACCELERATION = 500;
 const MAX_VELOCITY_NO_COLLISIONS = 250;
 const VELOCITY_BUTTER = 50;
-const ORANGE_VELOCITY = 50;
+
 const ORANGE_NUMBER = 10;
+const VELOCITY_INCREASE=10;
+
+var max_orange_vel=50;
+var min_orange_vel=30; 
 
 
 var MAX_VELOCITY = MAX_VELOCITY_NO_COLLISIONS;
@@ -21,6 +25,13 @@ var MAX_VELOCITY = MAX_VELOCITY_NO_COLLISIONS;
 var oranges = [];
 var butterPacks = [];
 var cheerios = [];
+
+setInterval(velocityTimer,10000);
+
+function velocityTimer(){
+    max_orange_vel+=VELOCITY_INCREASE;
+    min_orange_vel+=VELOCITY_INCREASE
+}
 
 function addTableTop(obj, x, y, z){
 	'use strict';
@@ -150,9 +161,9 @@ function createOrange(x, y, z) {
     var orange = new THREE.Object3D();
 
     var dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();
+    var velocityRandom= Math.random()*(max_orange_vel-min_orange_vel+1)+min_orange_vel;
 
-
-    orange.userData = {dof: dof, velocity: ORANGE_VELOCITY, radius: 15, visivel:true};
+    orange.userData = {dof: dof, velocity: velocityRandom, radius: 15, visivel:true};
 
     addOrangeBottom(orange,0,0,0);
     addCaule(orange,0,15,0);
@@ -327,12 +338,13 @@ function render(){
 
 function randomPos(orangeIndex){
     var orange=oranges[orangeIndex];
-    console.log(orange);
+    //console.log(orange);
     orange.position.x=(Math.random()*2 - 1)*235;
     orange.position.z=(Math.random()*2 - 1)*235;
     orange.userData.dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();
-    orange.userData.visivel=true;
+    orange.userData.velocity= Math.random()*(max_orange_vel-min_orange_vel+1)+min_orange_vel;
     scene.add(orange);
+    orange.userData.visivel=true;
 }
 
 function animate() {
@@ -392,12 +404,13 @@ function animate() {
 
 	        orange.userData.visivel=false;
 
-	        var time = Math.random()*10000;
-	        var timer=setTimeout(function(){ randomPos(orange1); }, time );
+	        var time = Math.random()*5000;
+	        setTimeout(function(){ randomPos(orange1); }, time );
       	}
-
+      	
 	   	var vector = new THREE.Vector3(orange.userData.dof.z,0,-orange.userData.dof.x);
 	    orange.rotateOnAxis(vector, 0.05);
+		
     }
 	// collisions
 	// car with butter
