@@ -11,6 +11,11 @@ var rotationAxis = new THREE.Vector3(0, 1, 0);
 
 const ACCELERATION = 400;
 const MAX_VELOCITY = 200;
+const ORANGE_VELOCITY = 50;
+const ORANGE_NUMBER = 10;
+
+var oranges = [];
+
 
 function addTableTop(obj, x, y, z){
 	'use strict';
@@ -104,14 +109,55 @@ function createCar(x, y, z) {
 function createOrange(x, y, z) {
 	'use strict';
 
-  	var geometry = new THREE.SphereGeometry( 15, 32, 32);
-  	var material = new THREE.MeshBasicMaterial( {color: 0xffa500, wireframe: true} );
-  	var orange = new THREE.Mesh( geometry, material );
-  	scene.add( orange );
+    function addOrangeBottom(obj, x, y, z) {
+	    'use strict';
+	    var geometry = new THREE.SphereGeometry( 15, 32, 32);
+	    var material = new THREE.MeshBasicMaterial( {color: 0xffa500, wireframe: true} );
+	    var mesh = new THREE.Mesh( geometry, material );
+	    mesh.position.set(x, y, z);
 
-  	orange.position.x = x;
-  	orange.position.y = y;
-  	orange.position.z = z;
+	    obj.add(mesh);
+	}
+
+    function addCaule(obj, x, y, z) {
+	    'use strict';
+	    var g1 = new THREE.CylinderGeometry( 2, 2, 5, 32 );
+	    var m1 = new THREE.MeshBasicMaterial( {color: 0x28B463, wireframe: true} );
+	    var mesh =  new THREE.Mesh( g1, m1 );
+	    mesh.position.set(x, y, z);
+
+	    obj.add(mesh);
+    }
+
+    function addLeaf(obj,x,y,z){
+	    'use strict';
+	    var geometry = new THREE.RingGeometry( 5, 10, 8, 8, 0, 0.7);
+	    var material = new THREE.MeshBasicMaterial( { color: 0xffff00, wireframe: true,side: THREE.DoubleSide } );
+	    var mesh = new THREE.Mesh( geometry, material );
+	    mesh.position.set(x, y, z);
+	    mesh.rotation.x = Math.PI / 2;
+
+	    obj.add(mesh);
+    }
+
+    var orange = new THREE.Object3D();
+    
+    var dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();
+
+
+    orange.userData = {dof: dof, velocity: ORANGE_VELOCITY};
+
+    addOrangeBottom(orange,0,0,0);
+    addCaule(orange,0,15,0);
+    addLeaf(orange,-4,15,-1);
+
+    oranges.push(orange);
+    scene.add(orange);
+
+    orange.position.x = x;
+    orange.position.y = y;
+    orange.position.z = z;
+
 
 }
 
@@ -171,7 +217,7 @@ function createScene() {
 	for (i=0; i < 44; i++) {
 		createCheerios(120*Math.cos(i) , 250, 120*Math.sin(i) );
 	}
-    for (i=0; i < 3; i++) {
+    for (i=0; i < ORANGE_NUMBER; i++) {
 		createOrange((Math.random()*2 - 1)*235, 265, (Math.random()*2 - 1)*235);
     }
 	for (i=0; i < 5; i++) {
@@ -314,7 +360,20 @@ function animate() {
       	car.userData.dof.applyAxisAngle(rotationAxis, -0.05);
     }
 
-		render();
+    for(var orange of oranges){
+      var next_orange_position_x = orange.position.x + orange.userData.dof.x * orange.userData.velocity * delta_time;
+      var next_orange_position_z = orange.position.z + orange.userData.dof.z * orange.userData.velocity * delta_time;
+
+      orange.position.x=next_orange_position_x;
+      orange.position.z=next_orange_position_z;
+      if(orange.position.x>260 || orange.position.x<-260 || orange.position.z>260 || orange.position.z<-260){
+        orange.position.x=(Math.random()*2 - 1)*235;
+        orange.position.z=(Math.random()*2 - 1)*235;
+      }
+
+    }
+
+	render();
 
     requestAnimationFrame(animate);
 }
