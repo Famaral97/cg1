@@ -5,7 +5,10 @@ var geometry, material, mesh;
 
 var i, controls;
 
-var car;
+var car, camera2, camera3;
+
+var camera2_flag = false;
+var camera3_flag = false;
 
 var rotationAxis = new THREE.Vector3(0, 1, 0);
 
@@ -17,7 +20,7 @@ const ORANGE_NUMBER = 10;
 const VELOCITY_INCREASE=10;
 
 var max_orange_vel=50;
-var min_orange_vel=30; 
+var min_orange_vel=30;
 
 
 var MAX_VELOCITY = MAX_VELOCITY_NO_COLLISIONS;
@@ -209,21 +212,23 @@ function createCamera_1(){
 
 function createCamera_2(){
 	'use strict'
-	camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
-	camera.position.x = 500;
-	camera.position.y = 500;
-	camera.position.z = 500;
-	camera.lookAt(scene.position);
+	camera2 = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
+	camera2.position.x = 500;
+	camera2.position.y = 500;
+	camera2.position.z = 500;
+	camera2.lookAt(scene.position);
 }
 
 function createCamera_3(){
-	'use strict'
-	camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
-	camera.position.x = car.position.x + 50;
-	camera.position.y = car.position.y + 50;
-	camera.position.z = car.position.z ;
-	camera.lookAt(car.position);
+  'use strict'
+  camera3 = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
+  camera3.position.x = -200;
+  camera3.position.y = 250;
+  camera3.position.z = 0;
+  camera3.lookAt(new THREE.Vector3(0, 0, 0));
+  car.add(camera3);
 }
+
 
 function createScene() {
 	'use strict';
@@ -319,12 +324,16 @@ function onKeyDown(e){
 
 		case 49:
 			createCamera_1();
+      camera2_flag = false;
+      camera3_flag = false;
 			break;
 		case 50:
-			createCamera_2();
+			camera2_flag = true;
+      camera3_flag = false;
 			break;
 		case 51:
-			createCamera_3();
+      camera3_flag = true;
+      camera2_flag = false;
 			break;
 	}
 
@@ -333,7 +342,15 @@ function onKeyDown(e){
 
 function render(){
 	'use strict'
-	renderer.render(scene, camera);
+  if(camera2_flag){
+    renderer.render(scene, camera2);
+  }
+  else if (camera3_flag) {
+    renderer.render(scene, camera3);
+  }
+  else {
+    renderer.render(scene, camera);
+  }
 };
 
 function randomPos(orangeIndex){
@@ -396,9 +413,9 @@ function animate() {
 
 	    orange.position.x=next_orange_position_x;
 	    orange.position.z=next_orange_position_z;
-	    
+
 	    if((orange.position.x>260 || orange.position.x<-260 || orange.position.z>260 || orange.position.z<-260)& orange.userData.visivel){
-	        
+
 	        var orange1=oranges.indexOf(orange);
 	        scene.remove(orange);
 
@@ -407,10 +424,10 @@ function animate() {
 	        var time = Math.random()*5000;
 	        setTimeout(function(){ randomPos(orange1); }, time );
       	}
-      	
+
 	   	var vector = new THREE.Vector3(orange.userData.dof.z,0,-orange.userData.dof.x);
 	    orange.rotateOnAxis(vector, 0.05);
-		
+
     }
 	// collisions
 	// car with butter
@@ -444,6 +461,8 @@ function init(){
 
 	createScene();
 	createCamera_1();
+  createCamera_2();
+  createCamera_3();
 
 	render();
 
