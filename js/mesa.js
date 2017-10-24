@@ -361,7 +361,7 @@ function randomPos(orangeIndex){
     orange.position.z=(Math.random()*2 - 1)*235;
     orange.userData.dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();
     orange.userData.velocity= Math.random()*(max_orange_vel-min_orange_vel+1)+min_orange_vel;
-    
+
     var orangevec= new THREE.Vector3(orange.position.x,orange.position.y,orange.position.z+10);
     orange.lookAt(orangevec);
 
@@ -372,92 +372,114 @@ function randomPos(orangeIndex){
 function animate() {
 	var delta_time = clock.getDelta();
 
-  	var next_velocity = car.userData.velocity + car.userData.acceleration * delta_time;
-  	var next_position_x = car.position.x + car.userData.dof.x * next_velocity * delta_time;
-  	var next_position_z = car.position.z + car.userData.dof.z * next_velocity * delta_time;
+  var next_velocity = car.userData.velocity + car.userData.acceleration * delta_time;
+  var next_position_x = car.position.x + car.userData.dof.x * next_velocity * delta_time;
+  var next_position_z = car.position.z + car.userData.dof.z * next_velocity * delta_time;
 
-	if (car.userData.move) {
+  var nextCar = {posx: next_position_x, posz: next_position_z, rad: car.userData.radius};
 
-		if (next_velocity > MAX_VELOCITY) {
-			car.userData.velocity = MAX_VELOCITY;
-		}
-		else if (next_velocity < -MAX_VELOCITY) {
-			car.userData.velocity = -MAX_VELOCITY;
-		}
-		else {
-			car.userData.velocity = next_velocity;
-		}
-		car.position.x = next_position_x;
-		car.position.z = next_position_z;
-	}
+  if(!(carVsPoints(nextCar, butterPacks).hasCollided)) {
 
-	else if (!car.userData.move) {
-		if ((car.userData.acceleration < 0 && next_velocity < 0) || (car.userData.acceleration > 0 && next_velocity > 0)){
-			car.userData.velocity = 0;
-		}
-		else {
-			car.userData.velocity = next_velocity;
-			car.position.x = next_position_x;
-			car.position.z = next_position_z;
-		}
-	}
+  	if (car.userData.move) {
+
+  		if (next_velocity > MAX_VELOCITY) {
+  			car.userData.velocity = MAX_VELOCITY;
+  		}
+  		else if (next_velocity < -MAX_VELOCITY) {
+  			car.userData.velocity = -MAX_VELOCITY;
+  		}
+  		else {
+  			car.userData.velocity = next_velocity;
+  		}
+  		car.position.x = next_position_x;
+  		car.position.z = next_position_z;
+  	}
+
+  	else if (!car.userData.move) {
+  		if ((car.userData.acceleration < 0 && next_velocity < 0) || (car.userData.acceleration > 0 && next_velocity > 0)){
+  			car.userData.velocity = 0;
+  		}
+  		else {
+  			car.userData.velocity = next_velocity;
+  			car.position.x = next_position_x;
+  			car.position.z = next_position_z;
+  		}
+  	}
+  }
+
+  else {
+    car.userData.velocity = 0;
+  }
 
 	if(car.userData.left){
-	      	car.rotateOnAxis(rotationAxis, 0.05);
-	      	car.userData.dof.applyAxisAngle(rotationAxis, 0.05);
-	 }
+      	car.rotateOnAxis(rotationAxis, 0.05);
+      	car.userData.dof.applyAxisAngle(rotationAxis, 0.05);
+  }
 
-    if(car.userData.right){
-      	car.rotateOnAxis(rotationAxis, -0.05);
-      	car.userData.dof.applyAxisAngle(rotationAxis, -0.05);
-    }
+  if(car.userData.right){
+    	car.rotateOnAxis(rotationAxis, -0.05);
+    	car.userData.dof.applyAxisAngle(rotationAxis, -0.05);
+  }
 
-    if(car.position.x>260 || car.position.x<-260 || car.position.z>260 || car.position.z<-260){
-      car.position.set(0,256,0);
-    }
+  if(car.position.x>260 || car.position.x<-260 || car.position.z>260 || car.position.z<-260){
+    car.position.set(0,256,0);
+    car.userData.velocity = 0;
+    car.userData.acceleration = 0;
+  }
 
-    for(var orange of oranges){
-	    var next_orange_position_x = orange.position.x + orange.userData.dof.x * orange.userData.velocity * delta_time;
-	    var next_orange_position_z = orange.position.z + orange.userData.dof.z * orange.userData.velocity * delta_time;
 
-	    orange.position.x=next_orange_position_x;
-	    orange.position.z=next_orange_position_z;
+  var carObs = { posx: car.position.x, posz: car.position.z, rad: car.userData.radius};
+  for(var orange of oranges){
+    var next_orange_position_x = orange.position.x + orange.userData.dof.x * orange.userData.velocity * delta_time;
+    var next_orange_position_z = orange.position.z + orange.userData.dof.z * orange.userData.velocity * delta_time;
 
-	    if((orange.position.x>260 || orange.position.x<-260 || orange.position.z>260 || orange.position.z<-260)& orange.userData.visivel){
 
-	        var orange1=oranges.indexOf(orange);
-	        scene.remove(orange);
+    var nextOrange = { posx: next_orange_position_x, posz: next_orange_position_z, rad: orange.userData.radius};
+    var orangeCollision = CollidingPoints(carObs, nextOrange);
+    console.log(orangeCollision);
+    if (!orangeCollision) {
+      orange.position.x=next_orange_position_x;
+      orange.position.z=next_orange_position_z;
 
-	        orange.userData.visivel=false;
+      if((orange.position.x>260 || orange.position.x<-260 || orange.position.z>260 || orange.position.z<-260)& orange.userData.visivel){
 
-	        var time = Math.random()*5000;
-	        setTimeout(function(){ randomPos(orange1); }, time );
+          var orange1=oranges.indexOf(orange);
+          scene.remove(orange);
+
+          orange.userData.visivel=false;
+
+          var time = Math.random()*5000;
+          setTimeout(function(){ randomPos(orange1); }, time );
       	}
 
-	
-	   	var vectorDof = orange.userData.dof;
-	   	var vector = new THREE.Vector3(0,1,0);
-	    orange.rotateOnAxis(vector.cross(vectorDof), rotation_angle);
+      var vectorDof = orange.userData.dof;
+      var vector = new THREE.Vector3(0,1,0);
+      orange.rotateOnAxis(vector.cross(vectorDof), rotation_angle);
 
     }
+
+    // a collision happened
+    else {
+      console.log("here");
+      orange.userData.dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();
+    }
+  }
 	// collisions
 	// car with butter
-	if (carVsObject(car, butterPacks).hasCollided) {
-		MAX_VELOCITY = VELOCITY_BUTTER;
-	} else {
-		MAX_VELOCITY = MAX_VELOCITY_NO_COLLISIONS;
-	}
-
+	// if (carVsObject(car, butterPacks).hasCollided) {
+	// 	MAX_VELOCITY = VELOCITY_BUTTER;
+	// } else {
+	// 	MAX_VELOCITY = MAX_VELOCITY_NO_COLLISIONS;
+	// }
+  //
 	// car with oranges
-	var orangeCollision = carVsObject(car, oranges);
-	if (orangeCollision.hasCollided) {
-		orangeCollision.object.userData.dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();;
-	}
+
 
 	render();
 
     requestAnimationFrame(animate);
 }
+
 
 function init(){
 	'use strict';
