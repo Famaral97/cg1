@@ -307,33 +307,33 @@ function onKeyDown(e){
 		// now for the car movement
 		case 38: // arrow up
 			car.userData.move = true;
-      car.userData.acceleration = ACCELERATION;
+      		car.userData.acceleration = ACCELERATION;
 			break;
 		case 40: // arrow down
 			car.userData.move = true;
-      car.userData.acceleration = -ACCELERATION;
+      		car.userData.acceleration = -ACCELERATION;
 			break;
 
 		// now for the car rotation
 		case 37: // left arrow
-	    car.userData.left = true;
-	    break;
-	  case 39: // right arrow
-	    car.userData.right = true;
-	    break;
+	    	car.userData.left = true;
+	    	break;
+	  	case 39: // right arrow
+	    	car.userData.right = true;
+	    	break;
 
 		case 49:
 			createCamera_1();
-      camera2_flag = false;
-      camera3_flag = false;
+      		camera2_flag = false;
+     		camera3_flag = false;
 			break;
 		case 50:
 			camera2_flag = true;
-      camera3_flag = false;
+      		camera3_flag = false;
 			break;
 		case 51:
-      camera3_flag = true;
-      camera2_flag = false;
+      		camera3_flag = true;
+      		camera2_flag = false;
 			break;
 	}
 
@@ -367,9 +367,9 @@ function randomPos(orangeIndex){
 function animate() {
 	var delta_time = clock.getDelta();
 
-  var next_velocity = car.userData.velocity + car.userData.acceleration * delta_time;
-  var next_position_x = car.position.x + car.userData.dof.x * next_velocity * delta_time;
-  var next_position_z = car.position.z + car.userData.dof.z * next_velocity * delta_time;
+  	var next_velocity = car.userData.velocity + car.userData.acceleration * delta_time;
+  	var next_position_x = car.position.x + car.userData.dof.x * next_velocity * delta_time;
+  	var next_position_z = car.position.z + car.userData.dof.z * next_velocity * delta_time;
 
 	if (car.userData.move) {
 
@@ -397,14 +397,18 @@ function animate() {
 		}
 	}
 
-		if(car.userData.left){
+	if(car.userData.left){
 	      	car.rotateOnAxis(rotationAxis, 0.05);
 	      	car.userData.dof.applyAxisAngle(rotationAxis, 0.05);
-	  }
+	 }
 
     if(car.userData.right){
       	car.rotateOnAxis(rotationAxis, -0.05);
       	car.userData.dof.applyAxisAngle(rotationAxis, -0.05);
+    }
+
+    if(car.position.x>260 || car.position.x<-260 || car.position.z>260 || car.position.z<-260){
+      car.position.set(0,256,0);
     }
 
     for(var orange of oranges){
