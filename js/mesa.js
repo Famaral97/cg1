@@ -436,7 +436,6 @@ function animate() {
 
     var nextOrange = { posx: next_orange_position_x, posz: next_orange_position_z, rad: orange.userData.radius};
     var orangeCollision = CollidingPoints(carObs, nextOrange);
-    console.log(orangeCollision);
     if (!orangeCollision) {
       orange.position.x=next_orange_position_x;
       orange.position.z=next_orange_position_z;
@@ -460,7 +459,6 @@ function animate() {
 
     // a collision happened
     else {
-      console.log("here");
       orange.userData.dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();
     }
   }
