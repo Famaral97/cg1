@@ -21,7 +21,7 @@ const VELOCITY_INCREASE=10;
 
 var max_orange_vel=50;
 var min_orange_vel=30;
-
+var rotation_angle=0.05;
 
 var MAX_VELOCITY = MAX_VELOCITY_NO_COLLISIONS;
 
@@ -33,7 +33,8 @@ setInterval(velocityTimer,10000);
 
 function velocityTimer(){
     max_orange_vel+=VELOCITY_INCREASE;
-    min_orange_vel+=VELOCITY_INCREASE
+    min_orange_vel+=VELOCITY_INCREASE;
+    rotation_angle+=0.02;
 }
 
 function addTableTop(obj, x, y, z){
@@ -360,6 +361,10 @@ function randomPos(orangeIndex){
     orange.position.z=(Math.random()*2 - 1)*235;
     orange.userData.dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();
     orange.userData.velocity= Math.random()*(max_orange_vel-min_orange_vel+1)+min_orange_vel;
+    
+    var orangevec= new THREE.Vector3(orange.position.x,orange.position.y,orange.position.z+10);
+    orange.lookAt(orangevec);
+
     scene.add(orange);
     orange.userData.visivel=true;
 }
@@ -429,8 +434,10 @@ function animate() {
 	        setTimeout(function(){ randomPos(orange1); }, time );
       	}
 
-	   	var vector = new THREE.Vector3(orange.userData.dof.z,0,-orange.userData.dof.x);
-	    orange.rotateOnAxis(vector, 0.05);
+	
+	   	var vectorDof = orange.userData.dof;
+	   	var vector = new THREE.Vector3(0,1,0);
+	    orange.rotateOnAxis(vector.cross(vectorDof), rotation_angle);
 
     }
 	// collisions
