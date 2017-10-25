@@ -430,7 +430,7 @@ function animate() {
   }
 
 
-  var carObs = { posx: car.position.x, posz: car.position.z, rad: car.userData.radius};
+  var carObs = objectToObstacle(car);
   for(var orange of oranges){
     var next_orange_position_x = orange.position.x + orange.userData.dof.x * orange.userData.velocity * delta_time;
     var next_orange_position_z = orange.position.z + orange.userData.dof.z * orange.userData.velocity * delta_time;
@@ -501,6 +501,7 @@ function animate() {
   }
 
   cheeriosCollision(cheerios);
+
 
 	render();
 
