@@ -409,7 +409,8 @@ function restart(){
 	oranges = [];
 	butterPacks = [];
 	cheerios = [];
-	  
+	carSpawn();
+
 	for (i=0; i < 44; i++) {
 	  createCheerios(240*Math.cos(i) , 250, 240*Math.sin(i) );
 	}
@@ -426,7 +427,6 @@ function restart(){
 	camera2_flag = false;
 	camera3_flag = false;
 
-	carSpawn();
 	max_orange_vel = 50;
 	min_orange_vel = 30;
 	rotation_angle = 0.05;
