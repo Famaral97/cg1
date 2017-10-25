@@ -557,6 +557,11 @@ function animate() {
     }
     cheerios[i].position.x = next_cheerio_position_x;
     cheerios[i].position.z = next_cheerio_position_z;
+    if(cheerios[i].position.x>255 || cheerios[i].position.x<-255 || cheerios[i].position.z>255 || cheerios[i].position.z<-255){
+      if(cheerios[i].position.y>-250){
+        cheerios[i].position.y-=1;
+      }
+    }
   }
 
   cheeriosCollision(cheerios);
