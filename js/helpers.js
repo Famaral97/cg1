@@ -43,3 +43,11 @@ function carVsObject(car, objectArray) {
 function cheeriosCollision() {
   //FIXME
 }
+
+// cheerio1 hits cheerio2
+function transferVelocity(cheerio1, cheerio2) {
+  cheerio2.userData.velocity += 0.5 * cheerio1.userData.velocity;
+  cheerio1.userData.velocity *= 0.6;
+  
+  cheerio2.userData.dof.add(cheerio1.userData.dof).normalize();
+}
