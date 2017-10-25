@@ -80,7 +80,7 @@ function createCheerios(x,y,z){
 	cheerios.push(torus);
 
   var cheerioDof = new THREE.Vector3(0, 0, 0)
-  torus.userData = {acceleration: 0, velocity: 0, dof: cheerioDof, radius: 7 };
+  torus.userData = {acceleration: CHEERIO_SLOW_DOWN, velocity: 0, dof: cheerioDof, radius: 7 };
 }
 
 function createCar(x, y, z) {
@@ -480,7 +480,6 @@ function animate() {
     if (CollidingPoints(carObs, nextCheerio)) {
 
       cheerios[i].userData.velocity = Math.abs(car.userData.velocity)/MAX_VELOCITY * CHEERIO_VELOCITY * 1.3;
-      cheerios[i].userData.acceleration = CHEERIO_SLOW_DOWN;
 
       var newCheerioDof = new THREE.Vector3(0, 0, 0);
       newCheerioDof.copy(car.userData.dof);
@@ -490,9 +489,9 @@ function animate() {
 
       cheerios[i].userData.dof = newCheerioDof;
     }
+
     else if (next_cheerio_velocity < 0) {
       cheerios[i].userData.velocity = 0;
-      cheerios[i].userData.acceleration = 0;
     }
     else {
       cheerios[i].userData.velocity = next_cheerio_velocity;
@@ -500,6 +499,8 @@ function animate() {
     cheerios[i].position.x = next_cheerio_position_x;
     cheerios[i].position.z = next_cheerio_position_z;
   }
+
+  cheeriosCollision(cheerios);
 
 	render();
 
