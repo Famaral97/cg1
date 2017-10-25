@@ -13,17 +13,17 @@ var camera3_flag = false;
 var rotationAxis = new THREE.Vector3(0, 1, 0);
 
 const ACCELERATION = 500;
-const MAX_VELOCITY_NO_COLLISIONS = 250;
-const VELOCITY_BUTTER = 50;
+const MAX_VELOCITY = 250;
+
+const CHEERIO_VELOCITY = 400;
+const CHEERIO_SLOW_DOWN = 1000;
 
 const ORANGE_NUMBER = 10;
-const VELOCITY_INCREASE=10;
+const VELOCITY_INCREASE = 10;
 
-var max_orange_vel=50;
-var min_orange_vel=30;
-var rotation_angle=0.05;
-
-var MAX_VELOCITY = MAX_VELOCITY_NO_COLLISIONS;
+var max_orange_vel = 50;
+var min_orange_vel = 30;
+var rotation_angle = 0.05;
 
 var oranges = [];
 var butterPacks = [];
@@ -76,8 +76,11 @@ function createCheerios(x,y,z){
 	torus.position.z = z;
 
 	torus.rotation.x = Math.PI / 2;
+
 	cheerios.push(torus);
 
+  var cheerioDof = new THREE.Vector3(0, 0, 0)
+  torus.userData = {acceleration: 0, velocity: 0, dof: cheerioDof, radius: 7 };
 }
 
 function createCar(x, y, z) {
@@ -108,7 +111,7 @@ function createCar(x, y, z) {
 
   var dof = new THREE.Vector3(1, 0, 0);
 
-  car.userData = {radius: 10, velocity: 0, acceleration: 0, move: false, dof: dof, left: false, right: false};
+  car.userData = {radius: 12, velocity: 0, acceleration: 0, move: false, dof: dof, left: false, right: false};
 
   material = new THREE.MeshBasicMaterial({ color: 0x2975c6, wireframe: true });
 
@@ -179,7 +182,6 @@ function createOrange(x, y, z) {
     orange.position.x = x;
     orange.position.y = y;
     orange.position.z = z;
-
 
 }
 
@@ -325,16 +327,16 @@ function onKeyDown(e){
 
 		case 49:
 			createCamera_1();
-      		camera2_flag = false;
-     		camera3_flag = false;
+      camera2_flag = false;
+     	camera3_flag = false;
 			break;
 		case 50:
 			camera2_flag = true;
-      		camera3_flag = false;
+      camera3_flag = false;
 			break;
 		case 51:
-      		camera3_flag = true;
-      		camera2_flag = false;
+      camera3_flag = true;
+      camera2_flag = false;
 			break;
 	}
 
@@ -355,14 +357,14 @@ function render(){
 };
 
 function randomPos(orangeIndex){
-    var orange=oranges[orangeIndex];
+    var orange = oranges[orangeIndex];
     //console.log(orange);
     orange.position.x=(Math.random()*2 - 1)*235;
     orange.position.z=(Math.random()*2 - 1)*235;
     orange.userData.dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();
     orange.userData.velocity= Math.random()*(max_orange_vel-min_orange_vel+1)+min_orange_vel;
 
-    var orangevec= new THREE.Vector3(orange.position.x,orange.position.y,orange.position.z+10);
+    var orangevec = new THREE.Vector3(orange.position.x,orange.position.y,orange.position.z+10);
     orange.lookAt(orangevec);
 
     scene.add(orange);
@@ -437,8 +439,8 @@ function animate() {
     var nextOrange = { posx: next_orange_position_x, posz: next_orange_position_z, rad: orange.userData.radius};
     var orangeCollision = CollidingPoints(carObs, nextOrange);
     if (!orangeCollision) {
-      orange.position.x=next_orange_position_x;
-      orange.position.z=next_orange_position_z;
+      orange.position.x = next_orange_position_x;
+      orange.position.z = next_orange_position_z;
 
       if((orange.position.x>260 || orange.position.x<-260 || orange.position.z>260 || orange.position.z<-260)& orange.userData.visivel){
 
@@ -457,20 +459,48 @@ function animate() {
 
     }
 
-    // a collision happened
+    // a collision with an orange happened
+    // FIXME restart the game properly
     else {
       orange.userData.dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();
+      car.position.set(0,256,0);
+      car.userData.velocity = 0;
+      car.userData.acceleration = 0;
     }
   }
-	// collisions
-	// car with butter
-	// if (carVsObject(car, butterPacks).hasCollided) {
-	// 	MAX_VELOCITY = VELOCITY_BUTTER;
-	// } else {
-	// 	MAX_VELOCITY = MAX_VELOCITY_NO_COLLISIONS;
-	// }
-  //
-	// car with oranges
+
+  // collision car-cheerios
+  for(var cheerio of cheerios) {
+    var next_cheerio_velocity = cheerio.userData.velocity - cheerio.userData.acceleration * delta_time;
+    var next_cheerio_position_x = cheerio.position.x + cheerio.userData.dof.x * cheerio.userData.velocity * delta_time;
+    var next_cheerio_position_z = cheerio.position.z + cheerio.userData.dof.z * cheerio.userData.velocity * delta_time;
+
+    var nextCheerio = {posx: next_cheerio_position_x, posz: next_cheerio_position_z, rad: cheerio.userData.radius};
+
+    if (CollidingPoints(carObs, nextCheerio)) {
+
+      cheerio.userData.velocity = Math.abs(car.userData.velocity)/MAX_VELOCITY * CHEERIO_VELOCITY * 1.2;
+      cheerio.userData.acceleration = CHEERIO_SLOW_DOWN;
+
+
+      var newCheerioDof = new THREE.Vector3(0, 0, 0);
+      newCheerioDof.copy(car.userData.dof);
+      if (car.userData.velocity < 0) {
+        newCheerioDof.negate();
+      }
+
+      cheerio.userData.dof = newCheerioDof;
+    }
+    else if (next_cheerio_velocity < 0) {
+      cheerio.userData.velocity = 0;
+      cheerio.userData.acceleration = 0;
+    }
+    else {
+      cheerio.userData.velocity = next_cheerio_velocity;
+    }
+    cheerio.position.x = next_cheerio_position_x;
+    cheerio.position.z = next_cheerio_position_z;
+  }
 
 
 	render();
