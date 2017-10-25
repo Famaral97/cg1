@@ -16,7 +16,7 @@ const ACCELERATION = 500;
 const MAX_VELOCITY = 250;
 
 const CHEERIO_VELOCITY = 400;
-const CHEERIO_SLOW_DOWN = 1000;
+const CHEERIO_SLOW_DOWN = -1000;
 
 const ORANGE_NUMBER = 10;
 const VELOCITY_INCREASE = 10;
@@ -470,18 +470,17 @@ function animate() {
   }
 
   // collision car-cheerios
-  for(var cheerio of cheerios) {
-    var next_cheerio_velocity = cheerio.userData.velocity - cheerio.userData.acceleration * delta_time;
-    var next_cheerio_position_x = cheerio.position.x + cheerio.userData.dof.x * cheerio.userData.velocity * delta_time;
-    var next_cheerio_position_z = cheerio.position.z + cheerio.userData.dof.z * cheerio.userData.velocity * delta_time;
+  for(var i = 0; i < cheerios.length; i++) {
+    var next_cheerio_velocity = cheerios[i].userData.velocity + cheerios[i].userData.acceleration * delta_time;
+    var next_cheerio_position_x = cheerios[i].position.x + cheerios[i].userData.dof.x * cheerios[i].userData.velocity * delta_time;
+    var next_cheerio_position_z = cheerios[i].position.z + cheerios[i].userData.dof.z * cheerios[i].userData.velocity * delta_time;
 
-    var nextCheerio = {posx: next_cheerio_position_x, posz: next_cheerio_position_z, rad: cheerio.userData.radius};
+    var nextCheerio = {posx: next_cheerio_position_x, posz: next_cheerio_position_z, rad: cheerios[i].userData.radius};
 
     if (CollidingPoints(carObs, nextCheerio)) {
 
-      cheerio.userData.velocity = Math.abs(car.userData.velocity)/MAX_VELOCITY * CHEERIO_VELOCITY * 1.2;
-      cheerio.userData.acceleration = CHEERIO_SLOW_DOWN;
-
+      cheerios[i].userData.velocity = Math.abs(car.userData.velocity)/MAX_VELOCITY * CHEERIO_VELOCITY * 1.3;
+      cheerios[i].userData.acceleration = CHEERIO_SLOW_DOWN;
 
       var newCheerioDof = new THREE.Vector3(0, 0, 0);
       newCheerioDof.copy(car.userData.dof);
@@ -489,23 +488,22 @@ function animate() {
         newCheerioDof.negate();
       }
 
-      cheerio.userData.dof = newCheerioDof;
+      cheerios[i].userData.dof = newCheerioDof;
     }
     else if (next_cheerio_velocity < 0) {
-      cheerio.userData.velocity = 0;
-      cheerio.userData.acceleration = 0;
+      cheerios[i].userData.velocity = 0;
+      cheerios[i].userData.acceleration = 0;
     }
     else {
-      cheerio.userData.velocity = next_cheerio_velocity;
+      cheerios[i].userData.velocity = next_cheerio_velocity;
     }
-    cheerio.position.x = next_cheerio_position_x;
-    cheerio.position.z = next_cheerio_position_z;
+    cheerios[i].position.x = next_cheerio_position_x;
+    cheerios[i].position.z = next_cheerio_position_z;
   }
-
 
 	render();
 
-    requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
 }
 
 
