@@ -188,18 +188,30 @@ function createOrange(x, y, z) {
 function createButter(x, y, z) {
   var geometry = new THREE.BoxGeometry(30, 20, 20);
   var material = new THREE.MeshBasicMaterial( {color: 0xf3ef7d, wireframe: true} );
-  var butter = new THREE.Mesh( geometry, material );
-  scene.add( butter );
+  var butterMesh = new THREE.Mesh( geometry, material );
+  
+  var butter = new THREE.Object3D();
+
+  butter.add(butterMesh);
 
   butter.position.x = x;
   butter.position.y = y;
   butter.position.z = z;
-
   butter.rotation.y = Math.random()*(Math.PI * 2);
+  butter.userData = { radius: (Math.sqrt(Math.pow(30, 2) + Math.pow(20, 2)) / 2 )};
 
-	butter.userData = { radius: (Math.sqrt(Math.pow(30, 2) + Math.pow(20, 2)) / 2 )};
+  var butterObs=objectToObstacle(butter);
+  var carObs = objectToObstacle(car);
 
-	butterPacks.push(butter);
+  while(CollidingPoints(carObs, butterObs)){
+    butter.position.x = (Math.random()*2 - 1)*210;
+    butter.position.y = 260;
+    butter.position.z = (Math.random()*2 - 1)*210;
+    butterObs=objectToObstacle(butter);
+  }
+
+  butterPacks.push(butter);
+  scene.add( butter );
 }
 
 function createCamera_1(){
@@ -508,7 +520,7 @@ function animate() {
     }
 
     // a collision with an orange happened
-    // FIXME restart the game properly
+    
     else {
       restart();
     }

@@ -24,7 +24,7 @@ function CollidingPoints(obs1, obs2) {
 function carVsPoints(nextCar, objectArray) {
   returnValue = { hasCollided: false, object: {} };
   for(var obj of objectArray) {
-    objObs = { posx: obj.position.x, posz: obj.position.z, rad: obj.userData.radius }
+    var objObs = objectToObstacle(obj);
     if (CollidingPoints(nextCar, objObs)) {
       returnValue.hasCollided = true;
       returnValue.object = obj;
