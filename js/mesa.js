@@ -67,9 +67,9 @@ function createCheerios(x,y,z){
 
 	var geometry = new THREE.TorusGeometry(5,1,12,20);
 	var material = new THREE.MeshBasicMaterial( { color: 0xFF420E, wireframe: true} );
-	var torus = new THREE.Mesh( geometry, material );
-
-	scene.add(torus);
+	var torusMesh = new THREE.Mesh( geometry, material );
+	var torus = new THREE.Object3D();
+	torus.add(torusMesh);
 
 	torus.position.x = x;
 	torus.position.y = y;
@@ -78,9 +78,10 @@ function createCheerios(x,y,z){
 	torus.rotation.x = Math.PI / 2;
 
 	cheerios.push(torus);
+	scene.add(torus);
 
-  var cheerioDof = new THREE.Vector3(0, 0, 0)
-  torus.userData = {acceleration: CHEERIO_SLOW_DOWN, velocity: 0, dof: cheerioDof, radius: 7 };
+  	var cheerioDof = new THREE.Vector3(0, 0, 0)
+  	torus.userData = {acceleration: CHEERIO_SLOW_DOWN, velocity: 0, dof: cheerioDof, radius: 7 };
 }
 
 function createCar(x, y, z) {
