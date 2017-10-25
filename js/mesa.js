@@ -239,7 +239,7 @@ function createScene() {
 	scene = new THREE.Scene();
 
 	createTable(0, 0, 0);
-	createCar(0, 256, 0);
+	createCar(0,256,-150);
 	for (i=0; i < 44; i++) {
 		createCheerios(240*Math.cos(i) , 250, 240*Math.sin(i) );
 	}
@@ -371,6 +371,56 @@ function randomPos(orangeIndex){
     orange.userData.visivel=true;
 }
 
+function carSpawn(){
+	car.position.set(0,256,-150);
+	car.userData.velocity = 0;
+	car.userData.acceleration = 0;
+	car.userData.dof = new THREE.Vector3(1,0,0);
+	var carvec = new THREE.Vector3(car.position.x,car.position.y,car.position.z+10);
+	car.lookAt(carvec);
+}
+
+function restart(){
+  
+	for(var orange of oranges){
+	    
+	  scene.remove(orange);
+	}
+	for(var butter of butterPacks){
+	    
+	  scene.remove(butter);
+	}
+	for(var cheerio of cheerios){
+	    
+	  scene.remove(cheerio);
+	}
+	oranges = [];
+	butterPacks = [];
+	cheerios = [];
+	  
+	for (i=0; i < 44; i++) {
+	  createCheerios(240*Math.cos(i) , 250, 240*Math.sin(i) );
+	}
+
+	for (i=0; i < 44; i++) {
+	  createCheerios(120*Math.cos(i) , 250, 120*Math.sin(i) );
+	}
+	for (i=0; i < ORANGE_NUMBER; i++) {
+	  createOrange((Math.random()*2 - 1)*235, 265, (Math.random()*2 - 1)*235);
+	}
+	for (i=0; i < 5; i++) {
+	  createButter((Math.random()*2 - 1)*210, 260, (Math.random()*2 - 1)*210);
+	}
+	camera2_flag = false;
+	camera3_flag = false;
+
+	carSpawn();
+	max_orange_vel = 50;
+	min_orange_vel = 30;
+	rotation_angle = 0.05;
+}
+
+
 function animate() {
 	var delta_time = clock.getDelta();
 
@@ -424,9 +474,7 @@ function animate() {
   }
 
   if(car.position.x>260 || car.position.x<-260 || car.position.z>260 || car.position.z<-260){
-    car.position.set(0,256,0);
-    car.userData.velocity = 0;
-    car.userData.acceleration = 0;
+    carSpawn();
   }
 
 
@@ -462,10 +510,7 @@ function animate() {
     // a collision with an orange happened
     // FIXME restart the game properly
     else {
-      orange.userData.dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();
-      car.position.set(0,256,0);
-      car.userData.velocity = 0;
-      car.userData.acceleration = 0;
+      restart();
     }
   }
 
