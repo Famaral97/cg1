@@ -20,10 +20,13 @@ const CHEERIO_SLOW_DOWN = -1000;
 
 const ORANGE_NUMBER = 10;
 const VELOCITY_INCREASE = 10;
+const INITIAL_MAX_VEL=50;
+const INITIAL_MIN_VEL=30;
+const INITIAL_ANGLE=0.05;
 
-var max_orange_vel = 50;
-var min_orange_vel = 30;
-var rotation_angle = 0.05;
+var max_orange_vel = INITIAL_MAX_VEL;
+var min_orange_vel = INITIAL_MIN_VEL;
+var rotation_angle = INITIAL_ANGLE;
 
 var oranges = [];
 var butterPacks = [];
@@ -35,6 +38,9 @@ function velocityTimer(){
     max_orange_vel+=VELOCITY_INCREASE;
     min_orange_vel+=VELOCITY_INCREASE;
     rotation_angle+=0.02;
+    for(var orange of oranges){
+      orange.userData.velocity+=5;
+    }
 }
 
 function addTableTop(obj, x, y, z){
@@ -412,9 +418,9 @@ function restart(){
 	cheerios = [];
 	carSpawn();
 
-	max_orange_vel = 50;
-	min_orange_vel = 30;
-	rotation_angle = 0.05;
+	max_orange_vel = INITIAL_MAX_VEL;
+	min_orange_vel = INITIAL_MIN_VEL;
+	rotation_angle = INITIAL_ANGLE;
 
 	for (i=0; i < 44; i++) {
 	  createCheerios(240*Math.cos(i) , 250, 240*Math.sin(i) );
@@ -517,7 +523,7 @@ function animate() {
 
       var vectorDof = orange.userData.dof;
       var vector = new THREE.Vector3(0,1,0);
-      orange.rotateOnAxis(vector.cross(vectorDof), rotation_angle);
+      orange.rotateOnAxis(vector.cross(vectorDof), rotation_angle*(orange.userData.velocity/max_orange_vel));
 
     }
 
@@ -559,7 +565,7 @@ function animate() {
     cheerios[i].position.z = next_cheerio_position_z;
     if(cheerios[i].position.x>255 || cheerios[i].position.x<-255 || cheerios[i].position.z>255 || cheerios[i].position.z<-255){
       if(cheerios[i].position.y>-250){
-        cheerios[i].position.y-=1;
+        cheerios[i].position.y-=3;
       }
     }
   }
