@@ -177,7 +177,7 @@ function createOrange(x, y, z) {
     var dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();
     var velocityRandom= Math.random()*(max_orange_vel-min_orange_vel+1)+min_orange_vel;
 
-    orange.userData = {dof: dof, velocity: velocityRandom, radius: 15, visivel:true};
+    orange.userData = {dof: dof, velocity: velocityRandom, radius: 15, timer:0, visivel:true};
 
     addOrangeBottom(orange,0,0,0);
     addCaule(orange,0,15,0);
@@ -400,7 +400,9 @@ function carSpawn(){
 }
 
 function restart(){
-  
+  	for(var orange of oranges){
+      clearTimeout(orange.userData.timer);
+  	}
 	for(var orange of oranges){
 	    
 	  scene.remove(orange);
@@ -518,7 +520,7 @@ function animate() {
           orange.userData.visivel=false;
 
           var time = Math.random()*5000;
-          setTimeout(function(){ randomPos(orange1); }, time );
+          orange.userData.timer=setTimeout(function(){ randomPos(orange1); }, time );
       	}
 
       var vectorDof = orange.userData.dof;
