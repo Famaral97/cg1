@@ -9,6 +9,7 @@ var car, camera2, camera3;
 
 var camera2_flag = false;
 var camera3_flag = false;
+var candle_flag = false;
 
 var rotationAxis = new THREE.Vector3(0, 1, 0);
 
@@ -31,6 +32,7 @@ var rotation_angle = INITIAL_ANGLE;
 var oranges = [];
 var butterPacks = [];
 var cheerios = [];
+var candles = [];
 
 setInterval(velocityTimer,10000);
 
@@ -251,6 +253,15 @@ function createCamera_3(){
   car.add(camera3);
 }
 
+function createCandle(x,y,z){
+  var sphere = new THREE.SphereGeometry( 10 );
+  var light1 = new THREE.PointLight( "#ccffcc", 1, 150 );
+  light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: "#ccffcc" } ) ) );
+  light1.position.set(x,y,z);
+  light1.visible=candle_flag;
+  scene.add( light1 );
+  candles.push(light1);
+}
 
 function createScene() {
 	'use strict';
@@ -272,6 +283,9 @@ function createScene() {
 	for (i=0; i < 5; i++) {
 		createButter((Math.random()*2 - 1)*210, 260, (Math.random()*2 - 1)*210);
 	}
+	for (i=0; i < 6; i++) {
+    createCandle(150*Math.cos(i*Math.PI/3) , 280, 150*Math.sin(i*Math.PI/3) );
+  }
 }
 
 function onResize(){
@@ -346,17 +360,21 @@ function onKeyDown(e){
 
 		case 49:
 			createCamera_1();
-      camera2_flag = false;
-     	camera3_flag = false;
+      		camera2_flag = false;
+     		camera3_flag = false;
 			break;
 		case 50:
 			camera2_flag = true;
-      camera3_flag = false;
+     		camera3_flag = false;
 			break;
 		case 51:
-      camera3_flag = true;
-      camera2_flag = false;
+		    camera3_flag = true;
+		    camera2_flag = false;
 			break;
+		case 67:
+		    candle_flag = !candle_flag;
+		    break;
+		      
 	}
 
 }
@@ -574,6 +592,11 @@ function animate() {
 
   cheeriosCollision(cheerios);
 
+  for(var candle of candles){
+    if(candle.visible!=candle_flag){
+      candle.visible=candle_flag;
+    }
+  }
 
 	render();
 
