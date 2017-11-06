@@ -10,6 +10,8 @@ var car, camera2, camera3;
 var camera2_flag = false;
 var camera3_flag = false;
 var candle_flag = false;
+var sun_flag = true;
+
 
 var rotationAxis = new THREE.Vector3(0, 1, 0);
 
@@ -33,6 +35,7 @@ var oranges = [];
 var butterPacks = [];
 var cheerios = [];
 var candles = [];
+var sun;
 
 setInterval(velocityTimer,10000);
 
@@ -263,6 +266,13 @@ function createCandle(x,y,z){
   candles.push(light1);
 }
 
+function createSun(x,y,z){
+  sun = new THREE.DirectionalLight( "#ffffff", 1);
+  //sun.position.set(x,y,z);
+  sun.visible=sun_flag;
+  scene.add( sun );
+}
+
 function createScene() {
 	'use strict';
 
@@ -286,6 +296,7 @@ function createScene() {
 	for (i=0; i < 6; i++) {
     createCandle(150*Math.cos(i*Math.PI/3) , 280, 150*Math.sin(i*Math.PI/3) );
   }
+  createSun(0,300,0);
 }
 
 function onResize(){
@@ -373,6 +384,9 @@ function onKeyDown(e){
 			break;
 		case 67:
 		    candle_flag = !candle_flag;
+		    break;
+		case 78:
+		    sun_flag = !sun_flag;
 		    break;
 		      
 	}
@@ -597,6 +611,8 @@ function animate() {
       candle.visible=candle_flag;
     }
   }
+
+  sun.visible=sun_flag;
 
 	render();
 
