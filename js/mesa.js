@@ -12,7 +12,6 @@ var camera3_flag = false;
 var candle_flag = false;
 var sun_flag = true;
 
-
 var rotationAxis = new THREE.Vector3(0, 1, 0);
 
 const ACCELERATION = 500;
@@ -37,6 +36,46 @@ var cheerios = [];
 var candles = [];
 var sun;
 
+var materials = [ ];
+var count = 0;
+
+var basicMaterials={
+  orange1 : new THREE.MeshBasicMaterial( {color: 0xffa500, wireframe: false} ),
+  leaf1 : new THREE.MeshBasicMaterial( { color: 0xffff00, wireframe: true,side: THREE.DoubleSide } ),
+  butter1 :  new THREE.MeshBasicMaterial( {color: 0xf3ef7d, wireframe: false} ),
+  table1 : new THREE.MeshBasicMaterial({color: 0xddddddd, wireframe: true}),
+  cheerios1 : new THREE.MeshBasicMaterial( { color: 0xFF420E, wireframe: true} ),
+  car1 : new THREE.MeshBasicMaterial({ color: 0x2975c6, wireframe: true }),
+  caule1 : new THREE.MeshBasicMaterial( {color: 0x28B463, wireframe: true} ),
+  candle1 : new THREE.MeshBasicMaterial( { color: "#ccffcc" } )
+}
+
+var lambertMaterials={
+  orange1 : new THREE.MeshLambertMaterial( {color: 0xffa500, wireframe: false} ),
+  leaf1 : new THREE.MeshLambertMaterial( { color: 0xffff00, wireframe: true,side: THREE.DoubleSide } ),
+  butter1 :  new THREE.MeshLambertMaterial( {color: 0xf3ef7d, wireframe: false} ),
+  table1 : new THREE.MeshLambertMaterial({color: 0xddddddd, wireframe: true}),
+  cheerios1 : new THREE.MeshLambertMaterial( { color: 0xFF420E, wireframe: true} ),
+  car1 : new THREE.MeshLambertMaterial({ color: 0x2975c6, wireframe: true }),
+  caule1 : new THREE.MeshLambertMaterial( {color: 0x28B463, wireframe: true} ),
+  candle1 : new THREE.MeshBasicMaterial( { color: "#ccffcc" } ),
+}
+
+var phongMaterials={
+  orange1 : new THREE.MeshPhongMaterial( {color: 0xffa500, wireframe: false} ),
+  leaf1 : new THREE.MeshPhongMaterial( { color: 0xffff00, wireframe: true,side: THREE.DoubleSide } ),
+  butter1 :  new THREE.MeshPhongMaterial( {color: 0xf3ef7d, wireframe: false} ),
+  table1 : new THREE.MeshPhongMaterial({color: 0xddddddd, wireframe: true}),
+  cheerios1 : new THREE.MeshPhongMaterial( { color: 0xFF420E, wireframe: true} ),
+  car1 : new THREE.MeshPhongMaterial({ color: 0x2975c6, wireframe: true }),
+  caule1 : new THREE.MeshPhongMaterial( {color: 0x28B463, wireframe: true} ),
+  candle1 : new THREE.MeshBasicMaterial( { color: "#ccffcc" } ),
+}
+
+materials.push(basicMaterials);
+materials.push(lambertMaterials);
+materials.push(phongMaterials);
+
 setInterval(velocityTimer,10000);
 
 function velocityTimer(){
@@ -53,7 +92,7 @@ function addTableTop(obj, x, y, z){
 	geometry = new THREE.BoxGeometry(500, 500, 500);
 	mesh = new THREE.Mesh(geometry, material);
 	mesh.position.set(x, y, z);
-
+	mesh.userData={index:"table1"};
 	obj.add(mesh);
 }
 
@@ -62,7 +101,7 @@ function createTable(x, y, z) {
 
 	var table = new THREE.Object3D();
 
-	material = new THREE.MeshBasicMaterial({color: 0xddddddd, wireframe: true});
+	material = materials[0].table1;
 
 	addTableTop(table, 0, 0, 0);
 
@@ -77,10 +116,11 @@ function createCheerios(x,y,z){
 	'use strict';
 
 	var geometry = new THREE.TorusGeometry(5,1,12,20);
-	var material = new THREE.MeshBasicMaterial( { color: 0xFF420E, wireframe: true} );
+	var material = materials[0].cheerios1;
 	var torusMesh = new THREE.Mesh( geometry, material );
 	var torus = new THREE.Object3D();
 	torus.add(torusMesh);
+	torusMesh.userData={index:"cheerios1"};
 
 	torus.position.x = x;
 	torus.position.y = y;
@@ -105,6 +145,7 @@ function createCar(x, y, z) {
     geometry = new THREE.CubeGeometry(30, 20, 20);
     mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y, z);
+    mesh.userData={index:"car1"};
 
     obj.add(mesh);
   }
@@ -115,6 +156,7 @@ function createCar(x, y, z) {
     geometry = new THREE.TorusGeometry(4, 3, 10, 50, 10);
     mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y, z);
+    mesh.userData={index:"car1"};
 
     obj.add(mesh);
   }
@@ -125,7 +167,7 @@ function createCar(x, y, z) {
 
   car.userData = {radius: 12, velocity: 0, acceleration: 0, move: false, dof: dof, left: false, right: false};
 
-  material = new THREE.MeshBasicMaterial({ color: 0x2975c6, wireframe: true });
+  material = materials[0].car1;
 
   addCarBody(car, 0, 8, 0);
   addCarWheel(car, 14, 0, -13);
@@ -149,9 +191,10 @@ function createOrange(x, y, z) {
     function addOrangeBottom(obj, x, y, z) {
 	    'use strict';
 	    var geometry = new THREE.SphereGeometry( 15, 12, 12);
-	    var material = new THREE.MeshBasicMaterial( {color: 0xffa500, wireframe: true} );
+	    var material = materials[0].orange1;
 	    var mesh = new THREE.Mesh( geometry, material );
 	    mesh.position.set(x, y, z);
+	    mesh.userData={index:"orange1"};
 
 	    obj.add(mesh);
 	}
@@ -159,9 +202,10 @@ function createOrange(x, y, z) {
     function addCaule(obj, x, y, z) {
 	    'use strict';
 	    var g1 = new THREE.CylinderGeometry( 2, 2, 5, 32 );
-	    var m1 = new THREE.MeshBasicMaterial( {color: 0x28B463, wireframe: true} );
+	    var m1 = materials[0].caule1;
 	    var mesh =  new THREE.Mesh( g1, m1 );
 	    mesh.position.set(x, y, z);
+	    mesh.userData={index:"caule1"};
 
 	    obj.add(mesh);
     }
@@ -169,10 +213,11 @@ function createOrange(x, y, z) {
     function addLeaf(obj,x,y,z){
 	    'use strict';
 	    var geometry = new THREE.RingGeometry( 5, 10, 8, 8, 0, 0.7);
-	    var material = new THREE.MeshBasicMaterial( { color: 0xffff00, wireframe: true,side: THREE.DoubleSide } );
+	    var material = materials[0].leaf1;
 	    var mesh = new THREE.Mesh( geometry, material );
 	    mesh.position.set(x, y, z);
 	    mesh.rotation.x = Math.PI / 2;
+	    mesh.userData={index:"leaf1"};
 
 	    obj.add(mesh);
     }
@@ -199,9 +244,9 @@ function createOrange(x, y, z) {
 
 function createButter(x, y, z) {
   var geometry = new THREE.BoxGeometry(30, 20, 20);
-  var material = new THREE.MeshBasicMaterial( {color: 0xf3ef7d, wireframe: true} );
+  var material = materials[0].butter1;
   var butterMesh = new THREE.Mesh( geometry, material );
-  
+  butterMesh.userData={index:"butter1"};
   var butter = new THREE.Object3D();
 
   butter.add(butterMesh);
@@ -259,7 +304,9 @@ function createCamera_3(){
 function createCandle(x,y,z){
   var sphere = new THREE.SphereGeometry( 10 );
   var light1 = new THREE.PointLight( "#ccffcc", 1, 150 );
-  light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: "#ccffcc" } ) ) );
+  var mesh = new THREE.Mesh( sphere, materials[0].candle1) ;
+  mesh.userData={index:"candle1"};
+  light1.add( mesh);
   light1.position.set(x,y,z);
   light1.visible=candle_flag;
   scene.add( light1 );
@@ -268,7 +315,6 @@ function createCandle(x,y,z){
 
 function createSun(x,y,z){
   sun = new THREE.DirectionalLight( "#ffffff", 1);
-  //sun.position.set(x,y,z);
   sun.visible=sun_flag;
   scene.add( sun );
 }
@@ -384,6 +430,9 @@ function onKeyDown(e){
 			break;
 		case 67:
 		    candle_flag = !candle_flag;
+		    break;
+		case 71:
+		    count++;
 		    break;
 		case 78:
 		    sun_flag = !sun_flag;
@@ -613,6 +662,12 @@ function animate() {
   }
 
   sun.visible=sun_flag;
+
+  scene.traverse(function (node){
+        if (node instanceof THREE.Mesh){
+          node.material = materials[count%3][node.userData.index];
+        }
+   });
 
 	render();
 
