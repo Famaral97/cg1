@@ -50,7 +50,7 @@ function addCarUpperBody(obj, x, y, z) {
   );
 
 
-  var material = materials[0].upper1;
+  var material = materials[2].upper1;
 
   var mesh = new THREE.Mesh( UpperCargeometry, material );
   mesh.userData={index:"upper1"};
@@ -106,7 +106,7 @@ function addCarLowerBody(obj, x, y, z) {
 
 	);
 
-  var material = materials[0].lower1;
+  var material = materials[2].lower1;
 
   var mesh = new THREE.Mesh( lowerGeometry, material );
   mesh.userData={index:"lower1"};
@@ -174,7 +174,7 @@ function addCarWheel(obj, x, y, z) {
 
 	);
 
-	var material = materials[0].wheel1;
+	var material = materials[2].wheel1;
 
 	var mesh = new THREE.Mesh( wheelGeometry, material );
   mesh.userData={index:"wheel1"};

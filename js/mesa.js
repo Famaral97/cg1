@@ -12,6 +12,7 @@ var camera3_flag = false;
 var candle_flag = false;
 var sun_flag = true;
 var wf_flag=true;
+var tecla_l=true;
 
 var rotationAxis = new THREE.Vector3(0, 1, 0);
 
@@ -82,9 +83,10 @@ var phongMaterials={
   wheel1: new THREE.MeshPhongMaterial( { color: 0xffffff ,wireframe: wf_flag} ),
 }
 
-materials.push(basicMaterials);
+
 materials.push(lambertMaterials);
 materials.push(phongMaterials);
+materials.push(basicMaterials);
 
 setInterval(velocityTimer,10000);
 
@@ -111,7 +113,7 @@ function createTable(x, y, z) {
 
 	var table = new THREE.Object3D();
 
-	material = materials[0].table1;
+	material = materials[2].table1;
 
 	addTableTop(table, 0, 0, 0);
 
@@ -126,7 +128,7 @@ function createCheerios(x,y,z){
 	'use strict';
 
 	var geometry = new THREE.TorusGeometry(5,1,12,20);
-	var material = materials[0].cheerios1;
+	var material = materials[2].cheerios1;
 	var torusMesh = new THREE.Mesh( geometry, material );
 	var torus = new THREE.Object3D();
 	torus.add(torusMesh);
@@ -154,7 +156,7 @@ function createCar(x, y, z) {
 
   car.userData = {radius: 10, velocity: 0, acceleration: 0, move: false, dof: dof, left: false, right: false};
 
-  material = materials[0].car1;
+  material = materials[2].car1;
 
   addCarUpperBody(car, 0, 2, 0);
 	addCarLowerBody(car, 0, 2, 0);
@@ -179,7 +181,7 @@ function createOrange(x, y, z) {
     function addOrangeBottom(obj, x, y, z) {
 	    'use strict';
 	    var geometry = new THREE.SphereGeometry( 15, 12, 12);
-	    var material = materials[0].orange1;
+	    var material = materials[2].orange1;
 	    var mesh = new THREE.Mesh( geometry, material );
 	    mesh.position.set(x, y, z);
 	    mesh.userData={index:"orange1"};
@@ -190,7 +192,7 @@ function createOrange(x, y, z) {
     function addCaule(obj, x, y, z) {
 	    'use strict';
 	    var g1 = new THREE.CylinderGeometry( 2, 2, 5, 32 );
-	    var m1 = materials[0].caule1;wf_flag
+	    var m1 = materials[2].caule1;wf_flag
 	    var mesh =  new THREE.Mesh( g1, m1 );
 	    mesh.position.set(x, y, z);
 	    mesh.userData={index:"caule1"};
@@ -201,7 +203,7 @@ function createOrange(x, y, z) {
     function addLeaf(obj,x,y,z){
 	    'use strict';
 	    var geometry = new THREE.RingGeometry( 5, 10, 8, 8, 0, 0.7);
-	    var material = materials[0].leaf1;
+	    var material = materials[2].leaf1;
 	    var mesh = new THREE.Mesh( geometry, material );
 	    mesh.position.set(x, y, z);
 	    mesh.rotation.x = Math.PI / 2;
@@ -232,7 +234,7 @@ function createOrange(x, y, z) {
 
 function createButter(x, y, z) {
   var geometry = new THREE.BoxGeometry(30, 20, 20);
-  var material = materials[0].butter1;
+  var material = materials[2].butter1;
   var butterMesh = new THREE.Mesh( geometry, material );
   butterMesh.userData={index:"butter1"};
   var butter = new THREE.Object3D();
@@ -292,7 +294,7 @@ function createCamera_3(){
 function createCandle(x,y,z){
   var sphere = new THREE.SphereGeometry( 10 );
   var light1 = new THREE.PointLight( "#ccffcc", 1, 150 );
-  var mesh = new THREE.Mesh( sphere, materials[0].candle1) ;
+  var mesh = new THREE.Mesh( sphere, materials[2].candle1) ;
   mesh.userData={index:"candle1"};
   light1.add( mesh);
   light1.position.set(x,y,z);
@@ -423,6 +425,9 @@ function onKeyDown(e){
 		case 71:
 		    count++;
 		    break;
+    case 76:
+        tecla_l= !tecla_l;
+        break;
 		case 78:
 		    sun_flag = !sun_flag;
 		    break;
@@ -651,17 +656,28 @@ function animate() {
   }
 
   sun.visible=sun_flag;
+  if(!tecla_l){
+    scene.traverse(function (node){
+          if (node instanceof THREE.Mesh){
+            node.material = materials[count%2][node.userData.index];
+            node.material.wireframe = wf_flag;
+          }
+     });
+   }
+   else{
+     scene.traverse(function (node){
+           if (node instanceof THREE.Mesh){
+             node.material = materials[2][node.userData.index];
+             node.material.wireframe = wf_flag;
+           }
+      });
 
-  scene.traverse(function (node){
-        if (node instanceof THREE.Mesh){
-          node.material = materials[count%3][node.userData.index];
-        }
-   });
-   scene.traverse(function (node){
-     if (node instanceof THREE.Mesh){
-       node.material.wireframe = wf_flag;
-     }
-   });
+   }
+  //  scene.traverse(function (node){
+  //    if (node instanceof THREE.Mesh){
+  //      node.material.wireframe = wf_flag;
+  //    }
+  //  });
 
 	render();
 
