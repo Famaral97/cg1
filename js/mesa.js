@@ -11,6 +11,7 @@ var camera2_flag = false;
 var camera3_flag = false;
 var candle_flag = false;
 var sun_flag = true;
+var wf_flag=true;
 
 var rotationAxis = new THREE.Vector3(0, 1, 0);
 
@@ -20,7 +21,7 @@ const MAX_VELOCITY = 250;
 const CHEERIO_VELOCITY = 400;
 const CHEERIO_SLOW_DOWN = -1000;
 
-const ORANGE_NUMBER = 10;
+const ORANGE_NUMBER = 0;
 const VELOCITY_INCREASE = 10;
 const INITIAL_MAX_VEL=50;
 const INITIAL_MIN_VEL=30;
@@ -40,36 +41,45 @@ var materials = [ ];
 var count = 0;
 
 var basicMaterials={
-  orange1 : new THREE.MeshBasicMaterial( {color: 0xffa500, wireframe: false} ),
-  leaf1 : new THREE.MeshBasicMaterial( { color: 0xffff00, wireframe: true,side: THREE.DoubleSide } ),
-  butter1 :  new THREE.MeshBasicMaterial( {color: 0xf3ef7d, wireframe: false} ),
-  table1 : new THREE.MeshBasicMaterial({color: 0xddddddd, wireframe: true}),
-  cheerios1 : new THREE.MeshBasicMaterial( { color: 0xFF420E, wireframe: true} ),
-  car1 : new THREE.MeshBasicMaterial({ color: 0x2975c6, wireframe: true }),
-  caule1 : new THREE.MeshBasicMaterial( {color: 0x28B463, wireframe: true} ),
-  candle1 : new THREE.MeshBasicMaterial( { color: "#ccffcc" } )
+  orange1 : new THREE.MeshBasicMaterial( {color: 0xffa500, wireframe: wf_flag} ),
+  leaf1 : new THREE.MeshBasicMaterial( { color: 0xffff00, wireframe: wf_flag,side: THREE.DoubleSide } ),
+  butter1 :  new THREE.MeshBasicMaterial( {color: 0xf3ef7d, wireframe: wf_flag} ),
+  table1 : new THREE.MeshBasicMaterial({color: 0x67d820, wireframe: wf_flag}),
+  cheerios1 : new THREE.MeshBasicMaterial( { color: 0xFF420E, wireframe: wf_flag} ),
+  car1 : new THREE.MeshBasicMaterial({ color: 0x2975c6, wireframe: wf_flag }),
+  caule1 : new THREE.MeshBasicMaterial( {color: 0x28B463, wireframe: wf_flag} ),
+  candle1 : new THREE.MeshBasicMaterial( { color: "#ccffcc",wireframe: wf_flag }),
+  upper1: new THREE.MeshBasicMaterial( { color: 0xffff00 ,wireframe: wf_flag } ),
+  lower1: new THREE.MeshBasicMaterial( { color: 0x009de0 ,wireframe: wf_flag } ),
+  wheel1: new THREE.MeshBasicMaterial( { color: 0xffffff ,wireframe: wf_flag} ),
 }
 
 var lambertMaterials={
-  orange1 : new THREE.MeshLambertMaterial( {color: 0xffa500, wireframe: false} ),
-  leaf1 : new THREE.MeshLambertMaterial( { color: 0xffff00, wireframe: true,side: THREE.DoubleSide } ),
-  butter1 :  new THREE.MeshLambertMaterial( {color: 0xf3ef7d, wireframe: false} ),
-  table1 : new THREE.MeshLambertMaterial({color: 0xddddddd, wireframe: true}),
-  cheerios1 : new THREE.MeshLambertMaterial( { color: 0xFF420E, wireframe: true} ),
-  car1 : new THREE.MeshLambertMaterial({ color: 0x2975c6, wireframe: true }),
-  caule1 : new THREE.MeshLambertMaterial( {color: 0x28B463, wireframe: true} ),
-  candle1 : new THREE.MeshBasicMaterial( { color: "#ccffcc" } ),
+  orange1 : new THREE.MeshLambertMaterial( {color: 0xffa500, wireframe: wf_flag} ),
+  leaf1 : new THREE.MeshLambertMaterial( { color: 0xffff00, wireframe: wf_flag,side: THREE.DoubleSide } ),
+  butter1 :  new THREE.MeshLambertMaterial( {color: 0xf3ef7d, wireframe: wf_flag} ),
+  table1 : new THREE.MeshLambertMaterial({color: 0x67d820, wireframe: wf_flag}),
+  cheerios1 : new THREE.MeshLambertMaterial( { color: 0xFF420E, wireframe: wf_flag} ),
+  car1 : new THREE.MeshLambertMaterial({ color: 0x2975c6, wireframe: wf_flag }),
+  caule1 : new THREE.MeshLambertMaterial( {color: 0x28B463, wireframe: wf_flag} ),
+  candle1 : new THREE.MeshBasicMaterial( { color: "#ccffcc" ,wireframe: wf_flag} ),
+  upper1: new THREE.MeshLambertMaterial( { color: 0xffff00 ,wireframe: wf_flag} ),
+  lower1: new THREE.MeshLambertMaterial( { color: 0x009de0 ,wireframe: wf_flag} ),
+  wheel1: new THREE.MeshLambertMaterial( { color: 0xffffff ,wireframe: wf_flag} ),
 }
 
 var phongMaterials={
-  orange1 : new THREE.MeshPhongMaterial( {color: 0xffa500, wireframe: false} ),
-  leaf1 : new THREE.MeshPhongMaterial( { color: 0xffff00, wireframe: true,side: THREE.DoubleSide } ),
-  butter1 :  new THREE.MeshPhongMaterial( {color: 0xf3ef7d, wireframe: false} ),
-  table1 : new THREE.MeshPhongMaterial({color: 0xddddddd, wireframe: true}),
-  cheerios1 : new THREE.MeshPhongMaterial( { color: 0xFF420E, wireframe: true} ),
-  car1 : new THREE.MeshPhongMaterial({ color: 0x2975c6, wireframe: true }),
-  caule1 : new THREE.MeshPhongMaterial( {color: 0x28B463, wireframe: true} ),
-  candle1 : new THREE.MeshBasicMaterial( { color: "#ccffcc" } ),
+  orange1 : new THREE.MeshPhongMaterial( {color: 0xffa500, wireframe: wf_flag} ),
+  leaf1 : new THREE.MeshPhongMaterial( { color: 0xffff00, wireframe: wf_flag,side: THREE.DoubleSide } ),
+  butter1 :  new THREE.MeshPhongMaterial( {color: 0xf3ef7d, wireframe: wf_flag} ),
+  table1 : new THREE.MeshPhongMaterial({color: 0x67d820, wireframe: wf_flag}),
+  cheerios1 : new THREE.MeshPhongMaterial( { color: 0xFF420E, wireframe: wf_flag} ),
+  car1 : new THREE.MeshPhongMaterial({ color: 0x2975c6, wireframe: wf_flag }),
+  caule1 : new THREE.MeshPhongMaterial( {color: 0x28B463, wireframe: wf_flag} ),
+  candle1 : new THREE.MeshBasicMaterial( { color: "#ccffcc" ,wireframe: wf_flag} ),
+  upper1: new THREE.MeshPhongMaterial( { color: 0xffff00 ,wireframe: wf_flag} ),
+  lower1: new THREE.MeshPhongMaterial( { color: 0x009de0 ,wireframe: wf_flag} ),
+  wheel1: new THREE.MeshPhongMaterial( { color: 0xffffff ,wireframe: wf_flag} ),
 }
 
 materials.push(basicMaterials);
@@ -138,45 +148,23 @@ function createCheerios(x,y,z){
 function createCar(x, y, z) {
   'use strict';
 
-  var wheel;
-
-  function addCarBody(obj, x, y, z) {
-    'use strict';
-    geometry = new THREE.CubeGeometry(30, 20, 20);
-    mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(x, y, z);
-    mesh.userData={index:"car1"};
-
-    obj.add(mesh);
-  }
-
-  function addCarWheel(obj, x, y, z) {
-    'use strict';
-
-    geometry = new THREE.TorusGeometry(4, 3, 10, 50, 10);
-    mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(x, y, z);
-    mesh.userData={index:"car1"};
-
-    obj.add(mesh);
-  }
-
   car = new THREE.Object3D();
 
   var dof = new THREE.Vector3(1, 0, 0);
 
-  car.userData = {radius: 12, velocity: 0, acceleration: 0, move: false, dof: dof, left: false, right: false};
+  car.userData = {radius: 10, velocity: 0, acceleration: 0, move: false, dof: dof, left: false, right: false};
 
   material = materials[0].car1;
 
-  addCarBody(car, 0, 8, 0);
-  addCarWheel(car, 14, 0, -13);
-  addCarWheel(car, 14, 0, 13);
-  addCarWheel(car, -14, 0, 13);
-  addCarWheel(car, -14, 0, -13);
+  addCarUpperBody(car, 0, 2, 0);
+	addCarLowerBody(car, 0, 2, 0);
 
-	car.scale.set(0.65, 0.65, 0.65);
+	addCarWheel(car, -3, -1, -2.5);
+	addCarWheel(car, -3, -1, 3.5);
+	addCarWheel(car, 7, -1, -2.5);
+	addCarWheel(car, 7, -1, 3.5);
 
+  car.scale.set(1.8, 3, 3);
 
   scene.add(car);
 
@@ -202,7 +190,7 @@ function createOrange(x, y, z) {
     function addCaule(obj, x, y, z) {
 	    'use strict';
 	    var g1 = new THREE.CylinderGeometry( 2, 2, 5, 32 );
-	    var m1 = materials[0].caule1;
+	    var m1 = materials[0].caule1;wf_flag
 	    var mesh =  new THREE.Mesh( g1, m1 );
 	    mesh.position.set(x, y, z);
 	    mesh.userData={index:"caule1"};
@@ -227,7 +215,7 @@ function createOrange(x, y, z) {
     var dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();
     var velocityRandom= Math.random()*(max_orange_vel-min_orange_vel+1)+min_orange_vel;
 
-    orange.userData = {dof: dof, velocity: velocityRandom, radius: 15, timer:0, visivel:true};
+    orange.userData = {dof: dof, velocity: velocityRandom, radius: 13, timer:0, visivel:true};
 
     addOrangeBottom(orange,0,0,0);
     addCaule(orange,0,15,0);
@@ -294,8 +282,8 @@ function createCamera_2(){
 function createCamera_3(){
   'use strict'
   camera3 = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
-  camera3.position.x = -200;
-  camera3.position.y = 250;
+  camera3.position.x = -50;
+  camera3.position.y = 50;
   camera3.position.z = 0;
   camera3.lookAt(new THREE.Vector3(0, 0, 0));
   car.add(camera3);
@@ -390,11 +378,12 @@ function onKeyDown(e){
 	switch (e.keyCode) {
 		case 65: //A
 		case 97: //a
-			scene.traverse(function (node){
-				if (node instanceof THREE.Mesh){
-					node.material.wireframe = !node.material.wireframe;
-				}
-			});
+      wf_flag= !wf_flag;
+			// scene.traverse(function (node){
+			// 	if (node instanceof THREE.Mesh){
+			// 		node.material.wireframe = !node.material.wireframe;
+			// 	}
+			// });
 			break;
 
 		// now for the car movement
@@ -437,7 +426,7 @@ function onKeyDown(e){
 		case 78:
 		    sun_flag = !sun_flag;
 		    break;
-		      
+
 	}
 
 }
@@ -485,15 +474,15 @@ function restart(){
       clearTimeout(orange.userData.timer);
   	}
 	for(var orange of oranges){
-	    
+
 	  scene.remove(orange);
 	}
 	for(var butter of butterPacks){
-	    
+
 	  scene.remove(butter);
 	}
 	for(var cheerio of cheerios){
-	    
+
 	  scene.remove(cheerio);
 	}
 	oranges = [];
@@ -611,7 +600,7 @@ function animate() {
     }
 
     // a collision with an orange happened
-    
+
     else {
       restart();
     }
@@ -667,6 +656,11 @@ function animate() {
         if (node instanceof THREE.Mesh){
           node.material = materials[count%3][node.userData.index];
         }
+   });
+   scene.traverse(function (node){
+     if (node instanceof THREE.Mesh){
+       node.material.wireframe = wf_flag;
+     }
    });
 
 	render();
