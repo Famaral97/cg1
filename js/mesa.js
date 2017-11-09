@@ -22,7 +22,7 @@ const MAX_VELOCITY = 250;
 const CHEERIO_VELOCITY = 400;
 const CHEERIO_SLOW_DOWN = -1000;
 
-const ORANGE_NUMBER = 10;
+const ORANGE_NUMBER = 0;
 const VELOCITY_INCREASE = 10;
 const INITIAL_MAX_VEL=50;
 const INITIAL_MIN_VEL=30;
@@ -154,7 +154,7 @@ function createCar(x, y, z) {
 
   var dof = new THREE.Vector3(1, 0, 0);
 
-  car.userData = {radius: 10, velocity: 0, acceleration: 0, move: false, dof: dof, left: false, right: false};
+  car.userData = {radius: 9, velocity: 0, acceleration: 0, move: false, dof: dof, left: false, right: false};
 
   material = materials[2].car1;
 
