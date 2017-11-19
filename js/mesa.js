@@ -159,12 +159,15 @@ function createCar(x, y, z) {
   material = materials[2].car1;
 
   addCarUpperBody(car, 0, 2, 0);
-	addCarLowerBody(car, 0, 2, 0);
+  addCarLowerBody(car, 0, 2, 0);
 
-	addCarWheel(car, -3, -1, -2.5);
-	addCarWheel(car, -3, -1, 3.5);
-	addCarWheel(car, 7, -1, -2.5);
-	addCarWheel(car, 7, -1, 3.5);
+  addCarWheel(car, -3, -1, -2.5);
+  addCarWheel(car, -3, -1, 3.5);
+  addCarWheel(car, 7, -1, -2.5);
+  addCarWheel(car, 7, -1, 3.5);
+
+  addCarLight(car, 7.5, 0, -1.5);
+  addCarLight(car, 7.5, 0, 1.5);	
 
   car.scale.set(1.8, 3, 3);
 
@@ -285,7 +288,7 @@ function createCamera_3(){
   'use strict'
   camera3 = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
   camera3.position.x = -50;
-  camera3.position.y = 50;
+  camera3.position.y = 30;
   camera3.position.z = 0;
   camera3.lookAt(new THREE.Vector3(0, 0, 0));
   car.add(camera3);

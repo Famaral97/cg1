@@ -189,3 +189,25 @@ function addCarWheel(obj, x, y, z) {
 	obj.add(mesh);
 
 }
+
+function addCarLight(obj,x,y,z){
+
+	var target = new THREE.Object3D();
+	target.position.set(30,1,z);
+	obj.add(target);
+	spotLight = new THREE.SpotLight( 0xffffff, 3, 150, Math.PI / 4, 10); 
+    spotLight.position.set(x, y, z);
+    spotLight.target=target;
+    spotLight.penumbra = 0.4;	
+    
+    var geometry = new THREE.SphereGeometry( 0.75, 12,12);
+	var material = materials[2].candle1;
+	var mesh = new THREE.Mesh( geometry, material );
+	mesh.position.set(x, y, z);
+	mesh.userData={index:"candle1"};
+
+	mesh.add( spotLight );	
+
+	obj.add(mesh);
+
+}
