@@ -11,8 +11,9 @@ var camera2_flag = false;
 var camera3_flag = false;
 var candle_flag = false;
 var sun_flag = true;
-var wf_flag=true;
+var wf_flag=false;
 var tecla_l=true;
+var headlights_flag=false;
 
 var rotationAxis = new THREE.Vector3(0, 1, 0);
 
@@ -37,6 +38,7 @@ var butterPacks = [];
 var cheerios = [];
 var candles = [];
 var sun;
+var headlights=[];
 
 var materials = [ ];
 var count = 0;
@@ -428,9 +430,12 @@ function onKeyDown(e){
 		case 71:
 		    count++;
 		    break;
-    case 76:
-        tecla_l= !tecla_l;
-        break;
+		case 72:
+	        headlights_flag = !headlights_flag;
+	        break;
+    	case 76:
+	        tecla_l= !tecla_l;
+	        break;
 		case 78:
 		    sun_flag = !sun_flag;
 		    break;
@@ -667,22 +672,20 @@ function animate() {
           }
      });
    }
-   else{
-     scene.traverse(function (node){
-           if (node instanceof THREE.Mesh){
-             node.material = materials[2][node.userData.index];
-             node.material.wireframe = wf_flag;
-           }
-      });
+  else{
+    scene.traverse(function (node){
+        if (node instanceof THREE.Mesh){
+            node.material = materials[2][node.userData.index];
+            node.material.wireframe = wf_flag;
+        }
+    });
 
-   }
-  //  scene.traverse(function (node){
-  //    if (node instanceof THREE.Mesh){
-  //      node.material.wireframe = wf_flag;
-  //    }
-  //  });
-
-	render();
+  }
+  for (var light of headlights){
+  	light.visible=headlights_flag;
+  }
+  
+  render();
 
   requestAnimationFrame(animate);
 }

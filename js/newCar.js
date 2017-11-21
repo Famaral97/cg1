@@ -198,7 +198,9 @@ function addCarLight(obj,x,y,z){
 	spotLight = new THREE.SpotLight( 0xffffff, 3, 150, Math.PI / 4, 10); 
     spotLight.position.set(x, y, z);
     spotLight.target=target;
-    spotLight.penumbra = 0.4;	
+    spotLight.penumbra = 0.4;
+    spotLight.visible=headlights_flag;
+    headlights.push(spotLight);	
     
     var geometry = new THREE.SphereGeometry( 0.75, 12,12);
 	var material = materials[2].candle1;
