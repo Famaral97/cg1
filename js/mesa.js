@@ -168,8 +168,8 @@ function createCar(x, y, z) {
   addCarWheel(car, 7, -1, -2.5);
   addCarWheel(car, 7, -1, 3.5);
 
-  addCarLight(car, 7.5, 0, -1.5);
-  addCarLight(car, 7.5, 0, 1.5);	
+  addCarLight(car, 7.5, 0, -1);
+  addCarLight(car, 7.5, 0, 1);	
 
   car.scale.set(1.8, 3, 3);
 
