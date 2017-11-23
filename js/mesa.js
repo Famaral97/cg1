@@ -43,11 +43,17 @@ var headlights=[];
 var materials = [ ];
 var count = 0;
 
+var texture = new THREE.TextureLoader().load("textures/cc.jpg");
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set(4,4);
+
+
 var basicMaterials={
   orange1 : new THREE.MeshBasicMaterial( {color: 0xffa500, wireframe: wf_flag} ),
   leaf1 : new THREE.MeshBasicMaterial( { color: 0xffff00, wireframe: wf_flag,side: THREE.DoubleSide } ),
   butter1 :  new THREE.MeshBasicMaterial( {color: 0xf3ef7d, wireframe: wf_flag} ),
-  table1 : new THREE.MeshBasicMaterial({color: 0x67d820, wireframe: wf_flag}),
+  table1 : new THREE.MeshBasicMaterial({/*color: 0x67d820,*/ wireframe: wf_flag, map: texture}),
   cheerios1 : new THREE.MeshBasicMaterial( { color: 0xFF420E, wireframe: wf_flag} ),
   car1 : new THREE.MeshBasicMaterial({ color: 0x2975c6, wireframe: wf_flag }),
   caule1 : new THREE.MeshBasicMaterial( {color: 0x28B463, wireframe: wf_flag} ),
@@ -61,7 +67,7 @@ var lambertMaterials={
   orange1 : new THREE.MeshLambertMaterial( {color: 0xffa500, wireframe: wf_flag} ),
   leaf1 : new THREE.MeshLambertMaterial( { color: 0xffff00, wireframe: wf_flag,side: THREE.DoubleSide } ),
   butter1 :  new THREE.MeshLambertMaterial( {color: 0xf3ef7d, wireframe: wf_flag} ),
-  table1 : new THREE.MeshLambertMaterial({color: 0x67d820, wireframe: wf_flag}),
+  table1 : new THREE.MeshLambertMaterial({/*color: 0x67d820,*/ wireframe: wf_flag, map: texture}),
   cheerios1 : new THREE.MeshLambertMaterial( { color: 0xFF420E, wireframe: wf_flag} ),
   car1 : new THREE.MeshLambertMaterial({ color: 0x2975c6, wireframe: wf_flag }),
   caule1 : new THREE.MeshLambertMaterial( {color: 0x28B463, wireframe: wf_flag} ),
@@ -75,7 +81,7 @@ var phongMaterials={
   orange1 : new THREE.MeshPhongMaterial( {color: 0xffa500, wireframe: wf_flag} ),
   leaf1 : new THREE.MeshPhongMaterial( { color: 0xffff00, wireframe: wf_flag,side: THREE.DoubleSide } ),
   butter1 :  new THREE.MeshPhongMaterial( {color: 0xf3ef7d, wireframe: wf_flag} ),
-  table1 : new THREE.MeshPhongMaterial({color: 0x67d820, wireframe: wf_flag}),
+  table1 : new THREE.MeshPhongMaterial({/*color: 0x67d820,*/ wireframe: wf_flag, map: texture}),
   cheerios1 : new THREE.MeshPhongMaterial( { color: 0xFF420E, wireframe: wf_flag} ),
   car1 : new THREE.MeshPhongMaterial({ color: 0x2975c6, wireframe: wf_flag }),
   caule1 : new THREE.MeshPhongMaterial( {color: 0x28B463, wireframe: wf_flag} ),
@@ -103,7 +109,7 @@ function velocityTimer(){
 
 function addTableTop(obj, x, y, z){
 	'use strict';
-	geometry = new THREE.BoxGeometry(500, 500, 500);
+	geometry = new THREE.BoxGeometry(500, 500, 500, 20, 20, 20);
 	mesh = new THREE.Mesh(geometry, material);
 	mesh.position.set(x, y, z);
 	mesh.userData={index:"table1"};
@@ -169,7 +175,7 @@ function createCar(x, y, z) {
   addCarWheel(car, 7, -1, 3.5);
 
   addCarLight(car, 7.5, 0, -1);
-  addCarLight(car, 7.5, 0, 1);	
+  addCarLight(car, 7.5, 0, 1);
 
   car.scale.set(1.8, 3, 3);
 
@@ -684,7 +690,7 @@ function animate() {
   for (var light of headlights){
   	light.visible=headlights_flag;
   }
-  
+
   render();
 
   requestAnimationFrame(animate);
