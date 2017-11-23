@@ -123,6 +123,8 @@ function createTable(x, y, z) {
 
 	material = materials[2].table1;
 
+  createBox(x, y, z);
+
 	addTableTop(table, 0, 0, 0);
 
 	scene.add(table);
