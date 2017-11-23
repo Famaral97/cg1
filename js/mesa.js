@@ -22,6 +22,8 @@ var wf_flag=false;
 var tecla_l=true;
 var headlights_flag=false;
 
+var lifeCount = 4;
+
 var rotationAxis = new THREE.Vector3(0, 1, 0);
 
 const ACCELERATION = 500;
@@ -329,7 +331,7 @@ function createCameraVidas(){
   cameraVidas.position.z = 0;
   cameraVidas.lookAt(scene2.position);
   cameraVidas.aspect = window.innerWidth/window.innerHeight*0.1;
-  
+
 }
 
 
@@ -380,11 +382,20 @@ function createScene() {
 
 function createScene2(){
   scene2 = new THREE.Scene();
-  createCar(scene2,100,0,-300);
-  createCar(scene2,200,0,-300);
-  createCar(scene2,0,0,-300);
-  createCar(scene2,-100,0,-300);
-  createCar(scene2,-200,0,-300);
+  var absPosx = 0;
+  var posx = absPosx;
+
+  for (var i = 0; i < lifeCount; i++) {
+    createCar(scene2, posx, 0, -425);
+
+    if (posx > 0) {
+      posx = -posx;
+    } else {
+      absPosx += 100;
+      posx = absPosx;
+    }
+  }
+
 }
 
 function onResize(){
@@ -664,8 +675,8 @@ function animate() {
     }
 
     // a collision with an orange happened
-
     else {
+      lifeCount--;
       restart();
     }
   }
