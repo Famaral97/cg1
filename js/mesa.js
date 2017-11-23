@@ -1,11 +1,18 @@
 /*global THREE*/
-var clock, camera, scene, renderer;
+var clock, camera, scene, renderer,scene2;
+
+var viewSize=1000;
+
+var ratio = window.innerHeight / window.innerWidth;
+
+var viewWidth = viewSize;
+var viewHeight = viewSize * ratio;
 
 var geometry, material, mesh;
 
 var i, controls;
 
-var car, camera2, camera3;
+var car, camera2, camera3,cameraVidas;
 
 var camera2_flag = false;
 var camera3_flag = false;
@@ -39,6 +46,7 @@ var cheerios = [];
 var candles = [];
 var sun;
 var headlights=[];
+var lives=[];
 
 var materials = [ ];
 var count = 0;
@@ -123,7 +131,7 @@ function createTable(x, y, z) {
 
 	material = materials[2].table1;
 
-  createBox(x, y, z);
+  //createBox(x, y, z);
 
 	addTableTop(table, 0, 0, 0);
 
@@ -157,10 +165,10 @@ function createCheerios(x,y,z){
   	torus.userData = {acceleration: CHEERIO_SLOW_DOWN, velocity: 0, dof: cheerioDof, radius: 7 };
 }
 
-function createCar(x, y, z) {
+function createCar(scene,x, y, z) {
   'use strict';
 
-  car = new THREE.Object3D();
+  var car = new THREE.Object3D();
 
   var dof = new THREE.Vector3(1, 0, 0);
 
@@ -186,6 +194,7 @@ function createCar(x, y, z) {
   car.position.x = x;
   car.position.y = y;
   car.position.z = z;
+  lives.push(car);
 }
 
 function createOrange(x, y, z) {
@@ -274,13 +283,18 @@ function createButter(x, y, z) {
   scene.add( butter );
 }
 
+var SCREEN_W, SCREEN_H;
+SCREEN_W = window.innerWidth;
+SCREEN_H = window.innerHeight;
+var left,bottom,width,height;
+
 function createCamera_1(){
 	'use strict';
 	var size = 600;
 	var aspect = window.innerWidth / window.innerHeight;
-	camera = new THREE.OrthographicCamera(size*aspect/-2, size*aspect/2, size/2, size/-2, 1, 2000);
+	camera = new THREE.OrthographicCamera(-viewWidth, viewWidth, viewHeight, -viewHeight, -viewSize, 2 * viewSize);
 	camera.position.x = 0;
-	camera.position.y = 400;
+	camera.position.y = viewSize;
 	camera.position.z = 0;
 	camera.lookAt(scene.position);
 }
@@ -303,6 +317,21 @@ function createCamera_3(){
   camera3.lookAt(new THREE.Vector3(0, 0, 0));
   car.add(camera3);
 }
+
+function createCameraVidas(){
+  'use strict'
+  var size = 100;
+  var aspect = window.innerWidth / window.innerHeight;
+  cameraVidas = new THREE.OrthographicCamera(-viewWidth, viewWidth, viewHeight, -viewHeight, -viewSize, 2 * viewSize);
+
+  cameraVidas.position.x = 0;
+  cameraVidas.position.y = viewSize;
+  cameraVidas.position.z = 0;
+  cameraVidas.lookAt(scene2.position);
+  cameraVidas.aspect = window.innerWidth/window.innerHeight*0.1;
+  
+}
+
 
 function createCandle(x,y,z){
   var sphere = new THREE.SphereGeometry( 10 );
@@ -328,7 +357,8 @@ function createScene() {
 	scene = new THREE.Scene();
 
 	createTable(0, 0, 0);
-	createCar(0,256,-150);
+	createCar(scene,0,256,-150);
+	car = lives.pop();
 	for (i=0; i < 44; i++) {
 		createCheerios(240*Math.cos(i) , 250, 240*Math.sin(i) );
 	}
@@ -346,6 +376,15 @@ function createScene() {
     createCandle(150*Math.cos(i*Math.PI/3) , 280, 150*Math.sin(i*Math.PI/3) );
   }
   createSun(0,300,0);
+}
+
+function createScene2(){
+  scene2 = new THREE.Scene();
+  createCar(scene2,100,0,-300);
+  createCar(scene2,200,0,-300);
+  createCar(scene2,0,0,-300);
+  createCar(scene2,-100,0,-300);
+  createCar(scene2,-200,0,-300);
 }
 
 function onResize(){
@@ -455,6 +494,8 @@ function onKeyDown(e){
 
 function render(){
 	'use strict'
+
+  renderer.clear();
   if(camera2_flag){
     renderer.render(scene, camera2);
   }
@@ -464,6 +505,8 @@ function render(){
   else {
     renderer.render(scene, camera);
   }
+  renderer.clearDepth();
+  renderer.render (scene2,cameraVidas);
 };
 
 function randomPos(orangeIndex){
@@ -707,13 +750,16 @@ function init(){
 	renderer = new THREE.WebGLRenderer({antialias: true});
 
 	renderer.setSize(window.innerWidth, window.innerHeight);
+	renderer.autoClear = false;
 
 	document.body.appendChild(renderer.domElement);
 
+	createScene2();
 	createScene();
 	createCamera_1();
   createCamera_2();
   createCamera_3();
+  createCameraVidas();
 
 	render();
 
