@@ -13,9 +13,10 @@ function renderTexture() {
   if (isOver) {
     letterBox.children[0].material = gameover;
   } else if (isPaused) {
-  
+    clock.stop();
     letterBox.children[0].material = pause;
   } else {
+    clock.start();
     letterBox.children[0].material = transparentMaterial;
   }
 }
