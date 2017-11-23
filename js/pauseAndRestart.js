@@ -5,15 +5,15 @@ var isPaused, isOver;
 isPaused = false;
 isOver = false;
 
-var transparentMaterial
+var transparentMaterial=new THREE.MeshBasicMaterial( { color: 0xffffff,opacity: 0.0, transparent:true} );
 
 function renderTexture() {
   if (isOver) {
-    transparentMaterial = new THREE.MeshBasicMaterial( { opacity: 0.0, map: THREE.ImageUtils.loadTexture('../textures/gameover.png') } );
+    transparentMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff,opacity: 0.0, transparent:true, map: THREE.ImageUtils.loadTexture('../textures/gameover.png') } );
   } else if (isPaused) {
-    transparentMaterial = new THREE.MeshBasicMaterial( { opacity: 0.0, map: THREE.ImageUtils.loadTexture('../textures/pause.png') } );
+    transparentMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff,opacity: 0.0, transparent:true, map: THREE.ImageUtils.loadTexture('../textures/pause.png') } );
   } else {
-    transparentMaterial = new THREE.MeshBasicMaterial( { opacity: 0.0 } );
+    transparentMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff,opacity: 0.0, transparent:true} );
   }
 }
 
@@ -28,7 +28,7 @@ function createBox(x, y, z) {
 
   letterBox.add(mesh);
 
-  scene.add(letterBox);
+  scene2.add(letterBox);
 
   letterBox.position.x = x;
   letterBox.position.y = y;
