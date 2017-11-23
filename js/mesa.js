@@ -596,6 +596,8 @@ function restart(){
 function animate() {
 	var delta_time = clock.getDelta();
 
+  if(!isPaused){
+  
   var next_velocity = car.userData.velocity + car.userData.acceleration * delta_time;
   var next_position_x = car.position.x + car.userData.dof.x * next_velocity * delta_time;
   var next_position_z = car.position.z + car.userData.dof.z * next_velocity * delta_time;
@@ -751,7 +753,7 @@ function animate() {
   for (var light of headlights){
   	light.visible=headlights_flag;
   }
-
+  }
   renderTexture();
   render();
 
