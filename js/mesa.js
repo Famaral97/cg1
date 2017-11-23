@@ -395,6 +395,7 @@ function createScene2(){
       posx = absPosx;
     }
   }
+  createBox(0, 100, 0);
 
 }
 
@@ -497,6 +498,10 @@ function onKeyDown(e){
 		case 78:
 		    sun_flag = !sun_flag;
 		    break;
+		case 83:
+			isPaused= !isPaused;
+			break;
+
 
 	}
 
@@ -747,6 +752,7 @@ function animate() {
   	light.visible=headlights_flag;
   }
 
+  renderTexture();
   render();
 
   requestAnimationFrame(animate);

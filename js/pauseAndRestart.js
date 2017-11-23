@@ -5,15 +5,16 @@ var isPaused, isOver;
 isPaused = false;
 isOver = false;
 
-var transparentMaterial=new THREE.MeshBasicMaterial( { color: 0xffffff,opacity: 0.0, transparent:true} );
+var transparentMaterial=new THREE.MeshBasicMaterial( { color: 0xffffff ,opacity: 0.0,transparent:true} );
 
 function renderTexture() {
   if (isOver) {
-    transparentMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff,opacity: 0.0, transparent:true, map: THREE.ImageUtils.loadTexture('../textures/gameover.png') } );
+    letterBox.children[0].material = new THREE.MeshBasicMaterial( { color: 0xffffff,opacity: 0.0, transparent:true, map: new THREE.TextureLoader().load('textures/gameover.png') } );
   } else if (isPaused) {
-    transparentMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff,opacity: 0.0, transparent:true, map: THREE.ImageUtils.loadTexture('../textures/pause.png') } );
+    letterBox.children[0].material = new THREE.MeshBasicMaterial( {  map: new THREE.TextureLoader().load('textures/pause.png') } );
+    
   } else {
-    transparentMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff,opacity: 0.0, transparent:true} );
+    letterBox.children[0].material = transparentMaterial;
   }
 }
 
@@ -22,7 +23,7 @@ function createBox(x, y, z) {
 
   letterBox = new THREE.Object3D();
 
-  var geometry = new THREE.BoxGeometry(500, 10, 500);
+  var geometry = new THREE.BoxGeometry(1500, 1  , 1000);
 
   var mesh = new THREE.Mesh(geometry, transparentMaterial);
 
