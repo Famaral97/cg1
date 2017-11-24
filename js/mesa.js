@@ -670,10 +670,11 @@ function animate() {
     
     if(lifeCount<0) isOver=true;
 
-    else if(lifeCount<INITIAL_LIFES){
+    else {
         lives[lifeCount].visible=false;
+        carSpawn();
     }
-    else carSpawn();
+    
   }
 
 
