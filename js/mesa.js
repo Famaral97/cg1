@@ -21,8 +21,9 @@ var sun_flag = true;
 var wf_flag=false;
 var tecla_l=true;
 var headlights_flag=false;
+var restart_flag=false;
 
-var lifeCount = 4;
+var lifeCount = 5;
 
 var rotationAxis = new THREE.Vector3(0, 1, 0);
 
@@ -37,10 +38,12 @@ const VELOCITY_INCREASE = 10;
 const INITIAL_MAX_VEL=50;
 const INITIAL_MIN_VEL=30;
 const INITIAL_ANGLE=0.05;
+const INITIAL_LIFES = 5;
 
 var max_orange_vel = INITIAL_MAX_VEL;
 var min_orange_vel = INITIAL_MIN_VEL;
 var rotation_angle = INITIAL_ANGLE;
+var lifeCount = INITIAL_LIFES;
 
 var oranges = [];
 var butterPacks = [];
@@ -385,7 +388,7 @@ function createScene2(){
   var absPosx = 0;
   var posx = absPosx;
 
-  for (var i = 0; i < lifeCount; i++) {
+  for (var i = 0; i < INITIAL_LIFES; i++) {
     createCar(scene2, posx, 0, -425);
 
     if (posx > 0) {
@@ -498,7 +501,10 @@ function onKeyDown(e){
 		case 78:
 		    sun_flag = !sun_flag;
 		    break;
-		case 83:
+		case 82:
+        if(isOver) restart_flag = true;
+        break;
+    case 83:
 			isPaused= !isPaused;
 			break;
 
@@ -587,6 +593,11 @@ function restart(){
 	for (i=0; i < 5; i++) {
 	  createButter((Math.random()*2 - 1)*210, 260, (Math.random()*2 - 1)*210);
 	}
+  for(i=0;i<INITIAL_LIFES;i++){
+    console.log(lives[i]);
+    lives[i].visible=true;
+  }
+  lifeCount=INITIAL_LIFES;
 	camera2_flag = false;
 	camera3_flag = false;
 
@@ -596,7 +607,14 @@ function restart(){
 function animate() {
 	var delta_time = clock.getDelta();
 
-  if(!isPaused){
+  if(restart_flag){
+    restart();
+    isOver=false;
+    restart_flag=false;
+  }
+
+
+  if(!isPaused && !isOver){
   
   var next_velocity = car.userData.velocity + car.userData.acceleration * delta_time;
   var next_position_x = car.position.x + car.userData.dof.x * next_velocity * delta_time;
@@ -648,7 +666,14 @@ function animate() {
   }
 
   if(car.position.x>260 || car.position.x<-260 || car.position.z>260 || car.position.z<-260){
-    carSpawn();
+    lifeCount--;
+    
+    if(lifeCount<0) isOver=true;
+
+    else if(lifeCount<INITIAL_LIFES){
+        lives[0].visible=false;
+    }
+    else carSpawn();
   }
 
 
@@ -684,7 +709,12 @@ function animate() {
     // a collision with an orange happened
     else {
       lifeCount--;
-      restart();
+      
+      if(lifeCount<0) isOver=true;
+
+      else if(lifeCount<INITIAL_LIFES){
+        lives[lifeCount].visible=false;
+      }
     }
   }
 
