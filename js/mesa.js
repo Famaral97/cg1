@@ -302,6 +302,8 @@ function createCamera_1(){
 	camera.position.y = viewSize;
 	camera.position.z = 0;
 	camera.lookAt(scene.position);
+  camera.zoom = 1.5;
+  camera.updateProjectionMatrix();
 }
 
 function createCamera_2(){
@@ -614,7 +616,7 @@ function animate() {
 
 
   if(!isPaused && !isOver){
-  
+
   var next_velocity = car.userData.velocity + car.userData.acceleration * delta_time;
   var next_position_x = car.position.x + car.userData.dof.x * next_velocity * delta_time;
   var next_position_z = car.position.z + car.userData.dof.z * next_velocity * delta_time;
@@ -666,14 +668,14 @@ function animate() {
 
   if(car.position.x>260 || car.position.x<-260 || car.position.z>260 || car.position.z<-260){
     lifeCount--;
-    
+
     if(lifeCount<0) isOver=true;
 
     else {
         lives[lifeCount].visible=false;
         carSpawn();
     }
-    
+
   }
 
 
@@ -685,7 +687,7 @@ function animate() {
 
     var nextOrange = { posx: next_orange_position_x, posz: next_orange_position_z, rad: orange.userData.radius};
     var orangeCollision = CollidingPoints(carObs, nextOrange);
-    
+
     orange.position.x = next_orange_position_x;
     orange.position.z = next_orange_position_z;
 
@@ -702,9 +704,9 @@ function animate() {
 
     var vectorDof = orange.userData.dof;
     var vector = new THREE.Vector3(0,1,0);
-    
+
     orange.rotateOnAxis(vector.cross(vectorDof), rotation_angle*(orange.userData.velocity/max_orange_vel));
-    
+
     if (!orangeCollision) {
       orange.userData.colidiu=false;
     }
@@ -712,7 +714,7 @@ function animate() {
     // a collision with an orange happened for the first time
     else if(!orange.userData.colidiu){
       lifeCount--;
-      orange.userData.colidiu=true; 
+      orange.userData.colidiu=true;
       if(lifeCount<0) isOver=true;
 
       else if(lifeCount<INITIAL_LIFES){
