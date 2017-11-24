@@ -244,7 +244,7 @@ function createOrange(x, y, z) {
     var dof = new THREE.Vector3(Math.random()*2-1, 0, Math.random()*2-1).normalize();
     var velocityRandom= Math.random()*(max_orange_vel-min_orange_vel+1)+min_orange_vel;
 
-    orange.userData = {dof: dof, velocity: velocityRandom, radius: 13, timer:0, visivel:true};
+    orange.userData = {colidiu: false, dof: dof, velocity: velocityRandom, radius: 13, timer:0, visivel:true};
 
     addOrangeBottom(orange,0,0,0);
     addCaule(orange,0,15,0);
@@ -594,7 +594,6 @@ function restart(){
 	  createButter((Math.random()*2 - 1)*210, 260, (Math.random()*2 - 1)*210);
 	}
   for(i=0;i<INITIAL_LIFES;i++){
-    console.log(lives[i]);
     lives[i].visible=true;
   }
   lifeCount=INITIAL_LIFES;
@@ -686,31 +685,34 @@ function animate() {
 
     var nextOrange = { posx: next_orange_position_x, posz: next_orange_position_z, rad: orange.userData.radius};
     var orangeCollision = CollidingPoints(carObs, nextOrange);
-    if (!orangeCollision) {
-      orange.position.x = next_orange_position_x;
-      orange.position.z = next_orange_position_z;
+    
+    orange.position.x = next_orange_position_x;
+    orange.position.z = next_orange_position_z;
 
-      if((orange.position.x>260 || orange.position.x<-260 || orange.position.z>260 || orange.position.z<-260)& orange.userData.visivel){
+    if((orange.position.x>260 || orange.position.x<-260 || orange.position.z>260 || orange.position.z<-260)& orange.userData.visivel){
 
-          var orange1=oranges.indexOf(orange);
-          scene.remove(orange);
+        var orange1=oranges.indexOf(orange);
+        scene.remove(orange);
 
-          orange.userData.visivel=false;
+        orange.userData.visivel=false;
 
-          var time = Math.random()*5000;
-          orange.userData.timer=setTimeout(function(){ randomPos(orange1); }, time );
-      	}
-
-      var vectorDof = orange.userData.dof;
-      var vector = new THREE.Vector3(0,1,0);
-      orange.rotateOnAxis(vector.cross(vectorDof), rotation_angle*(orange.userData.velocity/max_orange_vel));
-
+        var time = Math.random()*5000;
+        orange.userData.timer=setTimeout(function(){ randomPos(orange1); }, time );
     }
 
-    // a collision with an orange happened
-    else {
+    var vectorDof = orange.userData.dof;
+    var vector = new THREE.Vector3(0,1,0);
+    
+    orange.rotateOnAxis(vector.cross(vectorDof), rotation_angle*(orange.userData.velocity/max_orange_vel));
+    
+    if (!orangeCollision) {
+      orange.userData.colidiu=false;
+    }
+
+    // a collision with an orange happened for the first time
+    else if(!orange.userData.colidiu){
       lifeCount--;
-      
+      orange.userData.colidiu=true; 
       if(lifeCount<0) isOver=true;
 
       else if(lifeCount<INITIAL_LIFES){
