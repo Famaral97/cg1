@@ -7,7 +7,7 @@ var ratio = window.innerHeight / window.innerWidth;
 
 var viewWidth = viewSize;
 var viewHeight = viewSize * ratio;
-
+var velTimer;
 var geometry, material, mesh;
 
 var i, controls;
@@ -33,7 +33,7 @@ const MAX_VELOCITY = 250;
 const CHEERIO_VELOCITY = 400;
 const CHEERIO_SLOW_DOWN = -1000;
 
-const ORANGE_NUMBER = 10;
+const ORANGE_NUMBER = 5;
 const VELOCITY_INCREASE = 10;
 const INITIAL_MAX_VEL=50;
 const INITIAL_MIN_VEL=30;
@@ -109,7 +109,7 @@ materials.push(lambertMaterials);
 materials.push(phongMaterials);
 materials.push(basicMaterials);
 
-setInterval(velocityTimer,10000);
+velTimer=setInterval(velocityTimer,10000);
 
 function velocityTimer(){
     max_orange_vel+=VELOCITY_INCREASE;
@@ -335,7 +335,9 @@ function createCameraVidas(){
   cameraVidas.position.y = viewSize;
   cameraVidas.position.z = 0;
   cameraVidas.lookAt(scene2.position);
-  cameraVidas.aspect = window.innerWidth/window.innerHeight*0.1;
+  cameraVidas.zoom = 2;
+  camera.updateProjectionMatrix();
+  //cameraVidas.aspect = window.innerWidth/window.innerHeight*0.1;
 
 }
 
@@ -507,7 +509,7 @@ function onKeyDown(e){
         if(isOver) restart_flag = true;
         break;
     case 83:
-			isPaused= !isPaused;
+			if(!isOver) isPaused= !isPaused;
 			break;
 
 
@@ -607,6 +609,24 @@ function restart(){
 
 function animate() {
 	var delta_time = clock.getDelta();
+
+  if(isOver){
+    for(var orange of oranges){
+      clearTimeout(orange.userData.timer);
+    }
+  }
+  else if(isPaused){
+    for(var orange of oranges){
+      if(orange.userData.visivel == false){
+          clearTimeout(orange.userData.timer);
+          var time = Math.random()*5000;
+          orange.userData.timer=setTimeout(function(){ randomPos(orange1); }, time );
+      }
+    }
+    clearInterval(velTimer);
+    velTimer=setInterval(velocityTimer,10000);
+
+  }
 
   if(restart_flag){
     restart();
